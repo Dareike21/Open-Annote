@@ -15,6 +15,8 @@ public class Document {
 	private HashMap<Integer,Chapter> loaded_chapters; //Loads chapters as needed
 	private HashMap<Integer,Long> table_of_contents;
 	
+	private int loading_size = 10; //number of chapters allowed to be loaded at a time
+	
 	public Document(){
 		
 		this.tags = new ArrayList<String>();
@@ -105,7 +107,21 @@ public class Document {
 			
 		this.loaded_chapters.put(chapter_num,new Chapter(paras));
 		
-		//TODO unloading in case of large documents
+		if(loaded_chapters.keySet().size()>=loading_size) { //Removes chapter furthest from last loaded one if there are too many
+			Integer mindist = 10000000;
+			Integer minpos  = null;
+			
+			for(Integer pos : loaded_chapters.keySet()) {
+				
+				if( Math.abs(pos-chapter_num) < mindist ) {
+					mindist = Math.abs(pos-chapter_num);
+					minpos = pos;
+				}
+				
+			}
+			
+			loaded_chapters.remove(minpos);
+		}
 	}
 	
 	public void initialize_empty() {

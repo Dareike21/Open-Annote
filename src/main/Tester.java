@@ -11,7 +11,6 @@ public class Tester {
     	try {
 			doc.load_from_file("library/testtext.oad");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     	System.out.print("ID: ");
@@ -26,7 +25,6 @@ public class Tester {
     	try {
     		ano.load_from_file("library/testano.ano");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     	System.out.print("ID: ");
