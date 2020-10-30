@@ -5,7 +5,7 @@ import java.io.IOException;
 import text_obj.*;
 public class Tester {
 	
-    public static void main(String[] args) {
+    public static void test() {
     	
     	Document doc = new Document();
     	try {
