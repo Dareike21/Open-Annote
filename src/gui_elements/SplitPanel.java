@@ -9,6 +9,7 @@ import text_obj.Document;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.*;
 
@@ -22,11 +23,16 @@ public class SplitPanel extends JPanel {
 	private JPanel doc_panel;
 	private JPanel ano_panel;
 	private JTextPane doc_field;
-	
+	private JPanel nav_panel;
+	private JButton button_back;
+	private JButton button_forward;
+	private JTextField chapter_field;
+
 	private Document document;
 	private ArrayList<AnnotationSet> annotations;
 	private Integer font_size = 5;
 	private Integer current_chap = 1;
+	private JPanel holder;
 	
 	public SplitPanel() {
 		setBackground(Color.DARK_GRAY);
@@ -36,9 +42,9 @@ public class SplitPanel extends JPanel {
 		add(panel);
 		GridBagLayout gbl_edit_panel = new GridBagLayout();
 		gbl_edit_panel.columnWidths = new int[] {0, 0};
-		gbl_edit_panel.rowHeights = new int[]{0, 0};
+		gbl_edit_panel.rowHeights = new int[]{0, 0, 0};
 		gbl_edit_panel.columnWeights = new double[]{1.0, 0.0};
-		gbl_edit_panel.rowWeights = new double[]{0.0, 0.0};
+		gbl_edit_panel.rowWeights = new double[]{0.0, 0.0, 1.0};
 		panel.setLayout(gbl_edit_panel);
 		
 		doc_menu = new JMenuBar();
@@ -75,7 +81,6 @@ public class SplitPanel extends JPanel {
 		
 		int w = Toolkit.getDefaultToolkit().getScreenSize().width;
 		int h = Toolkit.getDefaultToolkit().getScreenSize().height;
-		
 		int margin = (int) Math.round(.375*(w-h)); //these margins should make the document appear 8.5x11 no matter the resolution
 		
 		JScrollPane scroll_pane = new JScrollPane();
@@ -101,6 +106,36 @@ public class SplitPanel extends JPanel {
 		gbc_edit_ano_panel.gridy = 1;
 		panel.add(ano_panel, gbc_edit_ano_panel);
 		
+		nav_panel = new JPanel();
+		GridBagConstraints gbc_nav_panel = new GridBagConstraints();
+		gbc_nav_panel.fill = GridBagConstraints.BOTH;
+		gbc_nav_panel.gridx = 0;
+		gbc_nav_panel.gridy = 2;
+		panel.add(nav_panel, gbc_nav_panel);
+		nav_panel.setLayout(new BorderLayout(0, 0));
+		
+		button_back = new JButton("<");
+		nav_panel.add(button_back, BorderLayout.WEST);
+		
+		button_forward = new JButton(">");
+		nav_panel.add(button_forward, BorderLayout.EAST);
+		
+		holder = new JPanel();
+		nav_panel.add(holder, BorderLayout.CENTER);
+		SpringLayout sl_holder = new SpringLayout();
+		holder.setLayout(sl_holder);
+		
+		margin = (int) Math.round( (3.0/8.0)*w - 100 );
+		
+		chapter_field = new JTextField();
+		sl_holder.putConstraint(SpringLayout.NORTH, chapter_field, 0, SpringLayout.NORTH, holder);
+		sl_holder.putConstraint(SpringLayout.WEST, chapter_field, margin, SpringLayout.WEST, holder);
+		sl_holder.putConstraint(SpringLayout.SOUTH, chapter_field, 0, SpringLayout.SOUTH, holder);
+		sl_holder.putConstraint(SpringLayout.EAST, chapter_field, -margin, SpringLayout.EAST, holder);
+		holder.add(chapter_field);
+		chapter_field.setColumns(10);
+		chapter_field.setHorizontalAlignment(JTextField.CENTER);
+		
 		///
 		try {
 			init_doc_field();
@@ -108,6 +143,7 @@ public class SplitPanel extends JPanel {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		init_buttons();
 	}
 	
 	private void init_doc_field() throws BadLocationException, IOException {
@@ -115,6 +151,23 @@ public class SplitPanel extends JPanel {
 	    HTMLDocument doc = new HTMLDocument();
 	    doc_field.setEditorKit(kit);
 	    doc_field.setDocument(doc);
+	}
+	
+	private void init_buttons() {
+		
+		SplitPanel master_ref = this;
+		
+		button_forward.addActionListener(new ActionListener() {
+	         public void actionPerformed(ActionEvent e) {
+	            master_ref.to_chapter(master_ref.current_chap+1);
+	         }
+	      });
+		
+		button_back.addActionListener(new ActionListener() {
+	         public void actionPerformed(ActionEvent e) {
+	            master_ref.to_chapter(master_ref.current_chap-1);
+	         }
+	      });
 	}
 	
 	public void init_read() {
@@ -184,6 +237,11 @@ public class SplitPanel extends JPanel {
 	}
 
 	private void refresh() {
+		
+		//Basic
+		chapter_field.setText(current_chap.toString());
+		
+		//Load Chapter
 		Chapter chap = document.get_chapter(current_chap);
 		
 		String font_tag = "<font size="+font_size.toString()+">";
@@ -207,4 +265,11 @@ public class SplitPanel extends JPanel {
 		doc_field.setText(html);
 	}
 	
+	private void to_chapter(int i) {
+		if(document.get_chapter(i)==null) {
+			return;
+		}
+		current_chap = i;
+		refresh();
+	}
 }
