@@ -123,7 +123,7 @@ public class AnnotationSet {
 		
 	}
 	
-	public void save_to_file(String path) {
+	public void save_to_file(String name, String path) {
 		
 		//TODO save to file
 		

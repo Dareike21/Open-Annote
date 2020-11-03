@@ -124,6 +124,14 @@ public class SplitPanel extends JPanel {
 	    //kit.insertHTML(doc, doc.getLength(), "<font color='red'><u>world</u></font>", 0, 0, null);
 		
 	}
+	
+	public void init_read() {
+		//TODO initializes split pane with menus/objs for read tab
+	}
+	
+	public void init_edit() {
+		//TODO initializes split pane with menus/objs for edit tab
+	}
 
 	public void set_chapter(Chapter contents) {
 		chapter = contents;

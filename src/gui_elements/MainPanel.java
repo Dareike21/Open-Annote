@@ -33,13 +33,7 @@ public class MainPanel extends JPanel {
 	}
 	
 	private void test() { //TODO remove
-		Document doc = new Document();
-    	try {
-			doc.load_from_file("library/testtext.oad");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-    	read_tab.set_chapter(doc.get_chapter(1));
+		
 	}
 	
 }
