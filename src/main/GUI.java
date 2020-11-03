@@ -15,6 +15,9 @@ public class GUI extends JFrame{
 	
 	public GUI() {
 		
+		ImageIcon icon = new ImageIcon("assets/images/logo_med.png");
+		setIconImage(icon.getImage());
+		
 		this.setExtendedState(JFrame.MAXIMIZED_BOTH); 
 		this.getContentPane().setBackground(new Color(20,20,20));
 		

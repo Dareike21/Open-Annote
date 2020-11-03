@@ -78,11 +78,16 @@ public class SplitPanel extends JPanel {
 		SpringLayout sl_doc_panel = new SpringLayout();
 		doc_panel.setLayout(sl_doc_panel);
 		
+		int w = Toolkit.getDefaultToolkit().getScreenSize().width;
+		int h = Toolkit.getDefaultToolkit().getScreenSize().height;
+		
+		int margin = (int) Math.round(.375*(w-h)); //these margins should make the document appear 8.5x11 no matter the resolution
+		
 		JScrollPane scroll_pane = new JScrollPane();
 		sl_doc_panel.putConstraint(SpringLayout.NORTH, scroll_pane, 0, SpringLayout.NORTH, doc_panel);
-		sl_doc_panel.putConstraint(SpringLayout.WEST, scroll_pane, 50, SpringLayout.WEST, doc_panel);
+		sl_doc_panel.putConstraint(SpringLayout.WEST, scroll_pane, margin, SpringLayout.WEST, doc_panel);
 		sl_doc_panel.putConstraint(SpringLayout.SOUTH, scroll_pane, 0, SpringLayout.SOUTH, doc_panel);
-		sl_doc_panel.putConstraint(SpringLayout.EAST, scroll_pane, -50, SpringLayout.EAST, doc_panel);
+		sl_doc_panel.putConstraint(SpringLayout.EAST, scroll_pane, -margin, SpringLayout.EAST, doc_panel);
 		doc_panel.add(scroll_pane);
 		
 		doc_field = new JTextPane(new HTMLDocument());

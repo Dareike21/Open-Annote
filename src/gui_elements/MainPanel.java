@@ -32,7 +32,7 @@ public class MainPanel extends JPanel {
 		test();
 	}
 	
-	private void test() {
+	private void test() { //TODO remove
 		Document doc = new Document();
     	try {
 			doc.load_from_file("library/testtext.oad");
