@@ -5,6 +5,7 @@ import gui_elements.MainPanel;
 
 import javax.swing.*;
 
+@SuppressWarnings("serial")
 public class GUI extends JFrame{
 	
 	//MAIN_OBJS
@@ -34,6 +35,7 @@ public class GUI extends JFrame{
 		    
 	public static void main(String[] args) {
 		
+		@SuppressWarnings("unused")
 		GUI gui = new GUI();
 		
 	}

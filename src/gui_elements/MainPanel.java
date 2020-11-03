@@ -2,18 +2,15 @@ package gui_elements;
 
 import javax.swing.*;
 
-import main.Tester;
-import text_obj.Document;
-
 import java.awt.*;
-import java.io.IOException;
 
+@SuppressWarnings("serial")
 public class MainPanel extends JPanel {
 	
 	private JTabbedPane tabs;
 	
-	private SplitPanel read_tab;
-	private SplitPanel edit_tab;
+	public SplitPanel read_tab;
+	public SplitPanel edit_tab;
 	
 	public MainPanel() {
 		setLayout(new GridLayout(1,1));
@@ -22,10 +19,12 @@ public class MainPanel extends JPanel {
 		add(tabs);
 		
 		read_tab = new SplitPanel();
+		read_tab.init_read();
 		ImageIcon read_icon = new ImageIcon("assets/images/read.png");
 		tabs.addTab("<html><font size=+1>Read</font></html>", read_icon, read_tab);
 		
 		edit_tab = new SplitPanel();
+		edit_tab.init_edit();
 		ImageIcon edit_icon = new ImageIcon("assets/images/edit.png");
 		tabs.addTab("<html><font size=+1>Edit</font></html>", edit_icon, edit_tab);
 		

@@ -108,7 +108,7 @@ public class Document {
 		this.loaded_chapters.put(chapter_num,new Chapter(paras));
 		
 		if(loaded_chapters.keySet().size()>=loading_size) { //Removes chapter furthest from last loaded one if there are too many
-			Integer mindist = 10000000;
+			Integer mindist = Integer.MAX_VALUE;
 			Integer minpos  = null;
 			
 			for(Integer pos : loaded_chapters.keySet()) {

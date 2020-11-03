@@ -5,8 +5,10 @@ import javax.swing.text.*;
 import javax.swing.text.html.*;
 
 import text_obj.*;
+import text_obj.Document;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.*;
 
@@ -19,8 +21,6 @@ public class SplitPanel extends JPanel {
 	private JMenuBar ano_menu;
 	private JPanel doc_panel;
 	private JPanel ano_panel;
-	private JMenu open_doc;
-	private JMenu edit_open_ano;
 	private JTextPane doc_field;
 	
 	private Chapter chapter;
@@ -49,9 +49,6 @@ public class SplitPanel extends JPanel {
 		gbc_edit_doc_menu.gridy = 0;
 		panel.add(doc_menu, gbc_edit_doc_menu);
 		
-		open_doc = new JMenu("Open document");
-		doc_menu.add(open_doc);
-		
 		ano_menu = new JMenuBar();
 		ano_menu.setBorderPainted(false);
 		GridBagConstraints gbc_edit_ano_menu = new GridBagConstraints();
@@ -60,9 +57,6 @@ public class SplitPanel extends JPanel {
 		gbc_edit_ano_menu.gridx = 1;
 		gbc_edit_ano_menu.gridy = 0;
 		panel.add(ano_menu, gbc_edit_ano_menu);
-		
-		edit_open_ano = new JMenu("Open annotation");
-		ano_menu.add(edit_open_ano);
 		
 		doc_panel = new JPanel();
 		doc_panel.setBorder(null);
@@ -127,15 +121,60 @@ public class SplitPanel extends JPanel {
 	
 	public void init_read() {
 		//TODO initializes split pane with menus/objs for read tab
+		
+		SplitPanel master_ref = this;
+		
+		//OPEN DOC
+		
+		JMenu open_doc = new JMenu("Open document");
+		doc_menu.add(open_doc);
+		
+		JMenuItem open_doc_dia = new JMenuItem("Open from file...");
+		open_doc.add(open_doc_dia);
+		
+		JMenuItem TEST_LOAD = new JMenuItem(new AbstractAction("LOAD TEST") {
+
+			private static final long serialVersionUID = 1L;
+
+			public void actionPerformed(ActionEvent e) {
+		    	Document doc = new Document();
+		    	try {
+					doc.load_from_file("library/testtext.oad");
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+		    	master_ref.set_chapter(doc.get_chapter(1));
+		    }
+		});
+		open_doc.add(TEST_LOAD);
+		
+		//
 	}
 	
 	public void init_edit() {
 		//TODO initializes split pane with menus/objs for edit tab
+		
+		JMenu open_doc = new JMenu("Open document");
+		doc_menu.add(open_doc);
 	}
 
 	public void set_chapter(Chapter contents) {
 		chapter = contents;
 		refresh();
+	}
+	
+	public int add_annotation(AnnoChapter anno) { //returns position that the anno is in the list
+		int pos = annotations.size();
+		annotations.add(anno);
+		return pos;
+	}
+	
+	public void remove_annotation(int pos) {
+		
+	}
+	
+	public void set_font_size(int f) {
+		font_size = f;
 	}
 
 	private void refresh() {
