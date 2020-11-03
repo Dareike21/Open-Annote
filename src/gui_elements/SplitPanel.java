@@ -4,8 +4,11 @@ import javax.swing.*;
 import javax.swing.text.*;
 import javax.swing.text.html.*;
 
+import text_obj.*;
+
 import java.awt.*;
 import java.io.IOException;
+import java.util.*;
 
 public class SplitPanel extends JPanel {
 
@@ -20,7 +23,9 @@ public class SplitPanel extends JPanel {
 	private JMenu edit_open_ano;
 	private JTextPane doc_field;
 	
-	private StyledDocument doc;
+	private Chapter chapter;
+	private ArrayList<AnnoChapter> annotations;
+	private Integer font_size = 5;
 	
 	public SplitPanel() {
 		setBackground(Color.DARK_GRAY);
@@ -115,12 +120,31 @@ public class SplitPanel extends JPanel {
 		
 	}
 
-	public void set_doc_field(String contents) {
-		System.out.println(contents);
-		doc_field.setText(contents);
+	public void set_chapter(Chapter contents) {
+		chapter = contents;
+		refresh();
+	}
+
+	private void refresh() {
+		String font_tag = "<font size="+font_size.toString()+">";
+		String html = "";
+		
+		html = html + "<html><div>";
+		
+		int i = 0;
+		String para;
+		while(true) {
+			para = chapter.get_paragraph(i);
+			if(para==null) {
+				break;
+			}
+			html = html + "<p>"+font_tag+para+"</font></p><br>";
+			i += 1;
+		}
+		
+		html = html + "</div></html>";
+		
+		doc_field.setText(html);
 	}
 	
-	public void set_doc_field_font(int size) {
-		
-	}
 }

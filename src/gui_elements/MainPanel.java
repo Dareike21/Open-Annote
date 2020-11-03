@@ -3,8 +3,10 @@ package gui_elements;
 import javax.swing.*;
 
 import main.Tester;
+import text_obj.Document;
 
 import java.awt.*;
+import java.io.IOException;
 
 public class MainPanel extends JPanel {
 	
@@ -31,8 +33,13 @@ public class MainPanel extends JPanel {
 	}
 	
 	private void test() {
-		read_tab.set_doc_field(Tester.lorem_ipsum);
-		read_tab.set_doc_field_font(20);
+		Document doc = new Document();
+    	try {
+			doc.load_from_file("library/testtext.oad");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    	read_tab.set_chapter(doc.get_chapter(1));
 	}
 	
 }
