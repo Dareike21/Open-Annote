@@ -23,9 +23,10 @@ public class SplitPanel extends JPanel {
 	private JPanel ano_panel;
 	private JTextPane doc_field;
 	
-	private Chapter chapter;
-	private ArrayList<AnnoChapter> annotations;
+	private Document document;
+	private ArrayList<AnnotationSet> annotations;
 	private Integer font_size = 5;
+	private Integer current_chap = 1;
 	
 	public SplitPanel() {
 		setBackground(Color.DARK_GRAY);
@@ -114,9 +115,6 @@ public class SplitPanel extends JPanel {
 	    HTMLDocument doc = new HTMLDocument();
 	    doc_field.setEditorKit(kit);
 	    doc_field.setDocument(doc);
-	    //kit.insertHTML(doc, doc.getLength(), "<b>hello", 0, 0, HTML.Tag.B);
-	    //kit.insertHTML(doc, doc.getLength(), "<font color='red'><u>world</u></font>", 0, 0, null);
-		
 	}
 	
 	public void init_read() {
@@ -129,8 +127,16 @@ public class SplitPanel extends JPanel {
 		JMenu open_doc = new JMenu("Open document");
 		doc_menu.add(open_doc);
 		
-		JMenuItem open_doc_dia = new JMenuItem("Open from file...");
-		open_doc.add(open_doc_dia);
+		JMenuItem OPEN_DOC = new JMenuItem(new AbstractAction("Open file...") {
+
+			private static final long serialVersionUID = 1L;
+
+			public void actionPerformed(ActionEvent e) {
+		    	//TODO
+		    }
+		});
+		open_doc.add(OPEN_DOC);
+		
 		
 		JMenuItem TEST_LOAD = new JMenuItem(new AbstractAction("LOAD TEST") {
 
@@ -143,7 +149,7 @@ public class SplitPanel extends JPanel {
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
-		    	master_ref.set_chapter(doc.get_chapter(1));
+		    	master_ref.set_doc(doc);
 		    }
 		});
 		open_doc.add(TEST_LOAD);
@@ -158,19 +164,19 @@ public class SplitPanel extends JPanel {
 		doc_menu.add(open_doc);
 	}
 
-	public void set_chapter(Chapter contents) {
-		chapter = contents;
+	public void set_doc(Document contents) {
+		document = contents;
 		refresh();
 	}
 	
-	public int add_annotation(AnnoChapter anno) { //returns position that the anno is in the list
+	public int add_annotation(AnnotationSet anno) { //returns position that the anno is in the list
 		int pos = annotations.size();
 		annotations.add(anno);
 		return pos;
 	}
 	
 	public void remove_annotation(int pos) {
-		
+		annotations.remove(pos);
 	}
 	
 	public void set_font_size(int f) {
@@ -178,23 +184,25 @@ public class SplitPanel extends JPanel {
 	}
 
 	private void refresh() {
+		Chapter chap = document.get_chapter(current_chap);
+		
 		String font_tag = "<font size="+font_size.toString()+">";
 		String html = "";
 		
-		html = html + "<html><div>";
+		html += "<html><div>";
 		
 		int i = 0;
 		String para;
 		while(true) {
-			para = chapter.get_paragraph(i);
+			para = chap.get_paragraph(i);
 			if(para==null) {
 				break;
 			}
-			html = html + "<p>"+font_tag+para+"</font></p><br>";
+			html += "<p>"+font_tag+para+"</font></p><br>";
 			i += 1;
 		}
 		
-		html = html + "</div></html>";
+		html += "</div></html>";
 		
 		doc_field.setText(html);
 	}
