@@ -27,12 +27,7 @@ public class MainPanel extends JPanel {
 		edit_tab.init_edit();
 		ImageIcon edit_icon = new ImageIcon("assets/images/edit.png");
 		tabs.addTab("<html><font size=+1>Edit</font></html>", edit_icon, edit_tab);
-		
-		test();
-	}
 	
-	private void test() { //TODO remove
-		
 	}
-	
+
 }

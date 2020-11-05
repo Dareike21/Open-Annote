@@ -161,7 +161,7 @@ public class AnnotationSet {
 	}
 	
 	public void close() {
-		// TODO Auto-generated method stub
+		//TODO Close annotationset
 		
 	}
 }

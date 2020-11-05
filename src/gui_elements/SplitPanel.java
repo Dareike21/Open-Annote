@@ -172,7 +172,7 @@ public class SplitPanel extends JPanel {
 	}
 	
 	public void init_read() {
-		//TODO initializes split pane with menus/objs for read tab
+		//initializes split pane with menus/objs for read tab
 		
 		SplitPanel master_ref = this;
 		
@@ -239,7 +239,7 @@ public class SplitPanel extends JPanel {
 	}
 	
 	public void init_edit() {
-		//TODO initializes split pane with menus/objs for edit tab
+		//initializes split pane with menus/objs for edit tab
 		
 		JMenu open_doc = new JMenu("Open document");
 		doc_menu.add(open_doc);

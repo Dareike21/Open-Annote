@@ -168,7 +168,7 @@ public class Document {
 	}
 
 	public void close() {
-		// TODO Auto-generated method stub
+		// TODO Close document
 		
 	}
 	
