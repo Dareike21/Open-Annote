@@ -23,9 +23,9 @@ public class AnnotationSet {
 		
 	}
 	
-	public void load_from_file(String path) throws IOException {
+	public void load_from_file(File in_file) throws IOException {
 		
-		this.file = new File(path); 
+		this.file = in_file;
 		this.reader = new RandomAccessFile(this.file,"r");
 		
 		String line;
@@ -157,6 +157,11 @@ public class AnnotationSet {
 		}
 		
 		return loaded_annochapters.get(i);
+		
+	}
+	
+	public void close() {
+		// TODO Auto-generated method stub
 		
 	}
 }

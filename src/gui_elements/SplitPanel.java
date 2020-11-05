@@ -10,6 +10,7 @@ import text_obj.Document;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
@@ -185,10 +186,37 @@ public class SplitPanel extends JPanel {
 			private static final long serialVersionUID = 1L;
 
 			public void actionPerformed(ActionEvent e) {
-		    	//TODO
+				JFileChooser fc = new JFileChooser();
+				
+		        int returnVal = fc.showOpenDialog(master_ref);
+
+		        if (returnVal == JFileChooser.APPROVE_OPTION) {
+		            File file = fc.getSelectedFile();
+		            
+		            Document doc = new Document();
+			    	try {
+						doc.load_from_file(file);
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+			    	master_ref.set_doc(doc);
+		            
+		        }
 		    }
 		});
 		open_doc.add(OPEN_DOC);
+		
+		JMenuItem CLOSE_DOC = new JMenuItem(new AbstractAction("Close") {
+
+			private static final long serialVersionUID = 1L;
+
+			public void actionPerformed(ActionEvent e) {
+				master_ref.document.close();
+		    	master_ref.document = null;
+		    	refresh();
+		    }
+		});
+		open_doc.add(CLOSE_DOC);
 		
 		
 		JMenuItem TEST_LOAD = new JMenuItem(new AbstractAction("LOAD TEST") {
@@ -198,7 +226,7 @@ public class SplitPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 		    	Document doc = new Document();
 		    	try {
-					doc.load_from_file("library/testtext.oad");
+					doc.load_from_file(new File("library/testtext.oad"));
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -218,6 +246,7 @@ public class SplitPanel extends JPanel {
 	}
 
 	public void set_doc(Document contents) {
+		current_chap = 1;
 		document = contents;
 		refresh();
 	}
@@ -237,6 +266,12 @@ public class SplitPanel extends JPanel {
 	}
 
 	private void refresh() {
+		
+		if(document==null) {
+			doc_field.setText("<html></html>");
+			chapter_field.setText("");
+			return;
+		}
 		
 		//Basic
 		chapter_field.setText(current_chap.toString());
@@ -266,6 +301,9 @@ public class SplitPanel extends JPanel {
 	}
 	
 	private void to_chapter(int i) {
+		if(document==null) {
+			return;
+		}
 		if(document.get_chapter(i)==null) {
 			return;
 		}

@@ -1,5 +1,6 @@
 package main;
 
+import java.io.File;
 import java.io.IOException;
 
 import text_obj.*;
@@ -9,7 +10,7 @@ public class Tester {
     	
     	Document doc = new Document();
     	try {
-			doc.load_from_file("library/testtext.oad");
+			doc.load_from_file(new File("library/testtext.oad"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -23,7 +24,7 @@ public class Tester {
 		
 		AnnotationSet ano = new AnnotationSet();
     	try {
-    		ano.load_from_file("library/testano.ano");
+    		ano.load_from_file(new File("library/testano.ano"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
