@@ -169,6 +169,21 @@ public class SplitPanel extends JPanel {
 	            master_ref.to_chapter(master_ref.current_chap-1);
 	         }
 	      });
+		
+		chapter_field.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		    	if(master_ref.document==null) {
+		    		refresh();
+		    	}
+		    	
+		    	try {
+		    		int i = Integer.parseInt(chapter_field.getText());
+		    		master_ref.to_chapter(i);
+		    	} catch (NumberFormatException nfe) {
+		    		refresh();
+		    	}
+		    }
+		});
 	}
 	
 	public void init_read() {
@@ -273,9 +288,6 @@ public class SplitPanel extends JPanel {
 			return;
 		}
 		
-		//Basic
-		chapter_field.setText(current_chap.toString());
-		
 		//Load Chapter
 		Chapter chap = document.get_chapter(current_chap);
 		
@@ -297,14 +309,19 @@ public class SplitPanel extends JPanel {
 		
 		html += "</div></html>";
 		
+		//output
+		
 		doc_field.setText(html);
+		chapter_field.setText(current_chap.toString());
 	}
 	
 	private void to_chapter(int i) {
 		if(document==null) {
+			refresh();
 			return;
 		}
 		if(document.get_chapter(i)==null) {
+			refresh();
 			return;
 		}
 		current_chap = i;
