@@ -168,8 +168,12 @@ public class Document {
 	}
 
 	public void close() {
-		// TODO Close document
-		
+		try {
+			reader.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	
