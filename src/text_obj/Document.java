@@ -124,15 +124,72 @@ public class Document {
 		}
 	}
 	
+	//Testing code is found in SplitPanel.java on the TEST_LOAD
 	public void initialize_empty() {
+		//TODO Check - What information is present in a blank document? 
 		
-		//TODO prepare new blank document
+		//Format version taken from testtext.oad
+		format_version = "alpha_oad"; 
+		
+		//Initializes to 0. I can change this if needed - I was 
+		//just unsure of its purpose and how it will be used. 
+		id = 0; 
+		
+		//Sets variables to defaults. 
+		file = null; 
+		reader = null; 
+		tags = new ArrayList<String>();
+		loaded_chapters = new HashMap<Integer,Chapter>();
+		table_of_contents = new HashMap<Integer,Long>();
 		
 	}
 	
-	public void save_to_file(String name, String path) {
+	//Testing code is found in SplitPanel.java on the TEST_LOAD
+	public void save_to_file(String name, String path) throws IOException {
+		//TODO Overwrite files (instead of just appending more information to them 
+		//TODO Check IOException, etc. 
+		//TODO Universalize line breaks - \r\n is windows-only 
 		
-		//TODO save to file
+		//assumes name is in format "testtext" 
+		//assumes path is in format "library/" 
+		String fileName = path + name + ".oad"; 
+		
+		//Name of new file 
+		File toSave = new File(fileName); 
+		
+		try (//Saves open document to named file. 
+		FileWriter writer = new FileWriter(toSave, true)) {
+			//Saves header 
+			writer.append("ID " + get_id() + "\r\n"); 
+			writer.append("TG" + "\r\n");  
+			writer.append("VR " + get_format_ver() + "\r\n"); 
+			writer.append("EDHD" + "\r\n");
+			writer.flush(); 
+			
+			//Saves chapters 
+			for( int i = 1; i <= table_of_contents.size(); i++)
+			{
+				writer.append("CH " + i + "\r\n"); 
+				Chapter curChapter = get_chapter(i); 
+				int j = 0; 
+				
+				while(curChapter.get_paragraph(j) != null)
+				{
+					writer.append(curChapter.get_paragraph(j) + "\r\n");
+					j++; 
+				}
+				writer.append("EDCH" + "\r\n");
+				writer.flush(); 
+			}
+		} 
+		
+		//Creates new file. If file with that name exists, overwrites it. 
+		boolean fileCreated = toSave.createNewFile(); 
+		if(fileCreated == false)
+		{
+			//TODO Overwrite file? delete existing file and replace it? 
+		}
+		
 		
 	}
 	
