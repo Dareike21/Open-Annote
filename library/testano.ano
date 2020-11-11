@@ -2,11 +2,11 @@
 TG
 VR alpha_ano
 EDHD
-CH 0
-0 20 0 30First annotation!
-0 406 1 15This annotation crosses paragraphs
-EDCH
 CH 1
+0 20 0 30First annotation!
+0 200 1 15This annotation crosses paragraphs
+EDCH
+CH 2
 0 20 0 30Another annotation on the second paragraph
-0 406 1 15Another paragraph-crosser
+0 200 1 15Another paragraph-crosser
 EDCH

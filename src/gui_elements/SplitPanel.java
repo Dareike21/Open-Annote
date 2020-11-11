@@ -1,6 +1,8 @@
 package gui_elements;
 
 import javax.swing.*;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 import javax.swing.text.*;
 import javax.swing.text.html.*;
 
@@ -94,7 +96,7 @@ public class SplitPanel extends JPanel {
 		doc_field = new JTextPane(new HTMLDocument());
 		doc_field.setEditable(false);
 		scroll_pane.setViewportView(doc_field);
-		
+				
 		ano_panel = new JPanel();
 		ano_panel.setBorder(null);
 		ano_panel.setBackground(Color.GRAY);
@@ -145,13 +147,44 @@ public class SplitPanel extends JPanel {
 			e.printStackTrace();
 		}
 		init_buttons();
+		annotations = new ArrayList<AnnotationSet>();
 	}
 	
 	private void init_doc_field() throws BadLocationException, IOException {
+		
+		SplitPanel master_ref = this;
+		
 		HTMLEditorKit kit = new HTMLEditorKit();
 	    HTMLDocument doc = new HTMLDocument();
 	    doc_field.setEditorKit(kit);
 	    doc_field.setDocument(doc);
+	    
+	    doc_field.addHyperlinkListener(new HyperlinkListener() {
+
+            @Override
+            public void hyperlinkUpdate(HyperlinkEvent e) {
+
+                if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+                	String url = e.getDescription();
+                	String[] anno_ids = url.substring(1, url.length()-1).split("/");
+                	
+                	ArrayList<String> anno_text = new ArrayList<String>();
+                	
+                	for( String id : anno_ids ) {
+                		String[] split = id.split("\\.");
+                		
+                		int annoset = Integer.parseInt(split[1]);      		
+                		int chap = Integer.parseInt(split[0]);
+                		int hash = Integer.parseInt(split[2]);
+                		
+                		String text = master_ref.annotations.get(annoset).get_annochapter(chap).get_annotation_from_hash(hash);
+                		System.out.println(text);
+                		//TODO display
+                	}
+                	
+                }
+            }
+        });
 	}
 	
 	private void init_buttons() {
@@ -274,7 +307,33 @@ public class SplitPanel extends JPanel {
 		});
 		open_doc.add(TEST_LOAD);
 		
-		//
+		/////////////////////////////////////////////////////////////////
+		
+		JMenu open_ano = new JMenu("Open annotation");
+		ano_menu.add(open_ano);
+		
+		//TODO Load annotations
+		//TODO Remove specific annotation
+		//TODO Close all annotations
+		
+		JMenuItem TEST_ANO = new JMenuItem(new AbstractAction("LOAD TEST") {
+
+			private static final long serialVersionUID = 1L;
+
+			public void actionPerformed(ActionEvent e) {
+				
+		    	AnnotationSet ano = new AnnotationSet();
+		    	try {
+		    		ano.load_from_file(new File("library/testano.ano"));
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+		    	master_ref.add_annotation(ano);
+				
+		    }
+	
+		});
+		open_ano.add(TEST_ANO);
 	}
 	
 	public void init_edit() {
@@ -293,11 +352,13 @@ public class SplitPanel extends JPanel {
 	public int add_annotation(AnnotationSet anno) { //returns position that the anno is in the list
 		int pos = annotations.size();
 		annotations.add(anno);
+		refresh();
 		return pos;
 	}
 	
 	public void remove_annotation(int pos) {
 		annotations.remove(pos);
+		refresh();
 	}
 	
 	public void set_font_size(int f) {
@@ -314,21 +375,73 @@ public class SplitPanel extends JPanel {
 		
 		//Load Chapter
 		Chapter chap = document.get_chapter(current_chap);
+		ArrayList<AnnoChapter> annos = new ArrayList<AnnoChapter>();
+		for( AnnotationSet a : annotations ) {
+			annos.add(a.get_annochapter(current_chap));
+		}
 		
 		String font_tag = "<font size="+font_size.toString()+">";
 		String html = "";
 		
 		html += "<html><div>";
 		
-		int i = 0;
+		int para_ind = 0;
 		String para;
 		while(true) {
-			para = chap.get_paragraph(i);
-			if(para==null) {
+			para = chap.get_paragraph(para_ind);
+			if(para==null||para=="") {
 				break;
 			}
-			html += "<p>"+font_tag+para+"</font></p><br>";
-			i += 1;
+			
+			String linked_para = "";
+			String last_url = "/";
+			
+			boolean inside_mark = false; //whether you're inside a <a> tag as it scans across the characters
+			
+			for(int pos = 0; pos < para.length(); pos++) {
+				
+				String url = "/";
+				
+				for( int a_chap = 0; a_chap < annos.size(); a_chap++) {
+					if(annos.get(a_chap) == null) {
+						continue;
+					}
+					for( int hash : annos.get(a_chap).at_pos(para_ind, pos)) {
+						url += Integer.toString(current_chap); //chapter
+						url += ".";
+						url += Integer.toString(a_chap); //which of the loaded annotation sets
+						url += ".";
+						url += Integer.toString(hash); //hashed id of the annotations
+						url += "/";
+					}
+				}
+				
+				String opening_tag = "<a style=\"background-color:yellow\" href=\""+url+"\">";
+				
+				if     ( last_url.equals("/") && !url.equals("/")) {
+					linked_para += opening_tag;
+					inside_mark=true;
+				}
+				else if( !last_url.equals("/") && url.equals("/") ) {
+					linked_para += "</a>";
+					inside_mark=false;
+				}
+				else if( !last_url.equals(url) ) {
+					linked_para += "</a>" + opening_tag;
+					inside_mark=true;
+				}
+				
+				linked_para += para.charAt(pos);
+				last_url = url;
+			}
+			if(inside_mark) {
+				linked_para += "</a>";
+			}
+			
+			System.out.println(linked_para);
+			
+			html += "<p>"+font_tag+linked_para+"</font></p><br>";
+			para_ind += 1;
 		}
 		
 		html += "</div></html>";
