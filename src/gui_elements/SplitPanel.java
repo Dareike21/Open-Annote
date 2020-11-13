@@ -20,6 +20,9 @@ public class SplitPanel extends JPanel {
 
 	private static final long serialVersionUID = 2827997432620163107L;
 	
+	private static final int READ_MODE = 0;
+	private static final int EDIT_MODE = 1;
+	
 	private JPanel panel;
 	private JMenuBar doc_menu;
 	private JMenuBar ano_menu;
@@ -36,6 +39,11 @@ public class SplitPanel extends JPanel {
 	private Integer font_size = 5;
 	private Integer current_chap = 1;
 	private JPanel holder;
+	
+	private ArrayList<String> open_annos;
+	private String open_annos_url;
+	
+	private int mode;
 	
 	public SplitPanel() {
 		setBackground(Color.DARK_GRAY);
@@ -166,21 +174,34 @@ public class SplitPanel extends JPanel {
 
                 if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
                 	String url = e.getDescription();
-                	String[] anno_ids = url.substring(1, url.length()-1).split("/");
                 	
-                	ArrayList<String> anno_text = new ArrayList<String>();
-                	
-                	for( String id : anno_ids ) {
-                		String[] split = id.split("\\.");
-                		
-                		int annoset = Integer.parseInt(split[1]);      		
-                		int chap = Integer.parseInt(split[0]);
-                		int hash = Integer.parseInt(split[2]);
-                		
-                		String text = master_ref.annotations.get(annoset).get_annochapter(chap).get_annotation_from_hash(hash);
-                		System.out.println(text);
-                		//TODO display
+                	if(url.equals(master_ref.open_annos_url)) {
+                		master_ref.open_annos_url = null;
+                		master_ref.open_annos = new ArrayList<String>();
                 	}
+                	else {
+	                	master_ref.open_annos_url = url;
+	                	master_ref.open_annos = new ArrayList<String>();
+	                	
+	                	String[] anno_ids = url.substring(1, url.length()-1).split("/");
+	                	
+	                	ArrayList<String> anno_text = new ArrayList<String>();
+	                	
+	                	for( String id : anno_ids ) {
+	                		String[] split = id.split("\\.");
+	                		
+	                		int annoset = Integer.parseInt(split[1]);      		
+	                		int chap = Integer.parseInt(split[0]);
+	                		int hash = Integer.parseInt(split[2]);
+	                		
+	                		String text = master_ref.annotations.get(annoset).get_annochapter(chap).get_annotation_from_hash(hash);
+	                		System.out.println(text);
+	                		
+	                		master_ref.open_annos.add(text);
+	                		
+	                	}
+                	}
+                	refresh();
                 	
                 }
             }
@@ -225,6 +246,8 @@ public class SplitPanel extends JPanel {
 		SplitPanel master_ref = this;
 		
 		//OPEN DOC
+		
+		this.mode = SplitPanel.READ_MODE;
 		
 		JMenu open_doc = new JMenu("Open document");
 		doc_menu.add(open_doc);
@@ -337,10 +360,43 @@ public class SplitPanel extends JPanel {
 	}
 	
 	public void init_edit() {
+		
+		SplitPanel master_ref=this;
+		
 		//initializes split pane with menus/objs for edit tab
+		
+		this.mode = SplitPanel.EDIT_MODE;
 		
 		JMenu open_doc = new JMenu("Open document");
 		doc_menu.add(open_doc);
+		
+		//////////////////////////
+		
+		JMenu open_ano = new JMenu("Open annotation");
+		ano_menu.add(open_ano);
+		
+		//TODO Load annotations
+		//TODO Remove specific annotation
+		//TODO Close all annotations
+		
+		JMenuItem TEST_ANO = new JMenuItem(new AbstractAction("LOAD TEST") {
+
+			private static final long serialVersionUID = 1L;
+
+			public void actionPerformed(ActionEvent e) {
+				
+		    	AnnotationSet ano = new AnnotationSet();
+		    	try {
+		    		ano.load_from_file(new File("library/testano.ano"));
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+		    	master_ref.add_annotation(ano);
+				
+		    }
+	
+		});
+		open_ano.add(TEST_ANO);
 	}
 
 	public void set_doc(Document contents) {
@@ -416,10 +472,28 @@ public class SplitPanel extends JPanel {
 					}
 				}
 				
-				String opening_tag = "<a style=\"background-color:yellow\" href=\""+url+"\">";
+				String base_color = "red"; //if you see red, its a problem
+				String select_color = "red";
+				
+				if(this.mode == READ_MODE) {
+					base_color = "#87CEFA";
+					select_color = "#57A5FF";
+				}
+				if(this.mode == EDIT_MODE) {
+					base_color = "#90EE90";
+					select_color = "4EDA5C";
+				}
+				
+				String opening_tag = "<a style=\"background-color:"+base_color+"\" href=\""+url+"\">";
+				String opening_tag_sel = "<a style=\"background-color:"+select_color+"\" href=\""+url+"\">";
 				
 				if     ( last_url.equals("/") && !url.equals("/")) {
-					linked_para += opening_tag;
+					if(url.equals(open_annos_url)) {
+						linked_para += opening_tag_sel;
+					}
+					else {
+						linked_para += opening_tag;
+					}
 					inside_mark=true;
 				}
 				else if( !last_url.equals("/") && url.equals("/") ) {
@@ -427,7 +501,13 @@ public class SplitPanel extends JPanel {
 					inside_mark=false;
 				}
 				else if( !last_url.equals(url) ) {
-					linked_para += "</a>" + opening_tag;
+					linked_para += "</a>";
+					if(url.equals(open_annos_url)) {
+						linked_para += opening_tag_sel;
+					}
+					else {
+						linked_para += opening_tag;
+					}
 					inside_mark=true;
 				}
 				
