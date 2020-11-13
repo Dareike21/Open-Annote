@@ -11,6 +11,7 @@ public class MainPanel extends JPanel {
 	
 	public SplitPanel read_tab;
 	public SplitPanel edit_tab;
+	public DocEditorPanel write_tab;
 	
 	public MainPanel() {
 		setLayout(new GridLayout(1,1));
@@ -27,6 +28,10 @@ public class MainPanel extends JPanel {
 		edit_tab.init_edit();
 		ImageIcon edit_icon = new ImageIcon("assets/images/edit.png");
 		tabs.addTab("<html><font size=+1>Edit</font></html>", edit_icon, edit_tab);
+		
+		write_tab = new DocEditorPanel();
+		ImageIcon write_icon = new ImageIcon("assets/images/write.png");
+		tabs.addTab("<html><font size=+1>Write</font></html>", write_icon, write_tab);
 	
 	}
 
