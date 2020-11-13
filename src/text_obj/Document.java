@@ -146,9 +146,7 @@ public class Document {
 	
 	//Testing code is found in SplitPanel.java on the TEST_LOAD
 	public void save_to_file(String name, String path) throws IOException {
-		//TODO Overwrite files (instead of just appending more information to them 
 		//TODO Check IOException, etc. 
-		//TODO Universalize line breaks - \r\n is windows-only 
 		
 		//assumes name is in format "testtext" 
 		//assumes path is in format "library/" 
@@ -157,13 +155,21 @@ public class Document {
 		//Name of new file 
 		File toSave = new File(fileName); 
 		
+		//If a file of the same name exists in the given directory, returns an error. 
+		if(toSave.exists() == true)
+		{
+			System.out.println("A file with this name already exists");
+			return; 
+		}
+		
 		try (//Saves open document to named file. 
 		FileWriter writer = new FileWriter(toSave, true)) {
 			//Saves header 
-			writer.append("ID " + get_id() + "\r\n"); 
-			writer.append("TG" + "\r\n");  
-			writer.append("VR " + get_format_ver() + "\r\n"); 
-			writer.append("EDHD" + "\r\n");
+			String endline = System.getProperty("line.separator"); 
+			writer.append("ID " + get_id() + endline); 
+			writer.append("TG" + endline);  
+			writer.append("VR " + get_format_ver() + endline); 
+			writer.append("EDHD" + endline);
 			writer.flush(); 
 			
 			//Saves chapters 
@@ -182,14 +188,18 @@ public class Document {
 				writer.flush(); 
 			}
 		} 
+		catch(IOException e)
+		{
+			//Auto-generated catch block 
+			e.printStackTrace();
+		}
 		
-		//Creates new file. If file with that name exists, overwrites it. 
+		//Creates new file. 
 		boolean fileCreated = toSave.createNewFile(); 
 		if(fileCreated == false)
 		{
-			//TODO Overwrite file? delete existing file and replace it? 
+			System.out.println("Error saving file");
 		}
-		
 		
 	}
 	

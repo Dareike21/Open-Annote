@@ -306,9 +306,9 @@ public class SplitPanel extends JPanel {
 		    	//The following code tests the initialize_empty() and save_to_file() functions. 
 				//If successful, two new files should be created in the "library" folder. 
 				//One is named "savetest.oad" and is identical to "testtext.oad". 
-				//The other is named "blanktest.oad" and should be a blank document identical to "blankdoc.oad". 
+				//The other is named "blanktest.oad" and should be a blank document.
 				//Before testing, if the files "savetest.oad" and "blanktest.oad" should be deleted from the "library" folder if they exist. 
-		    	//The program will still run if they exist, but (as of now) the program will append information to them instead of overwriting them. 
+		    	//The program will still run if they exist, but (as of now) the program will return a "file already exists" error and not save. 
 		    	/*
 		    	try {
 					doc.save_to_file("savetest", "library/");
