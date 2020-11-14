@@ -584,6 +584,7 @@ public class SplitPanel extends JPanel {
 		}
 		if(current_chap != i) {
 			open_annos = null;
+			open_annos_url = null;
 			current_chap = i;
 			refresh();
 		}
