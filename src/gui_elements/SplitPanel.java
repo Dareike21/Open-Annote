@@ -33,7 +33,10 @@ public class SplitPanel extends JPanel {
 	private JButton button_back;
 	private JButton button_forward;
 	private JTextField chapter_field;
-
+	
+	private JTextPane anno_field_r;
+	private JPanel     anno_field_e;
+	
 	private Document document;
 	private ArrayList<AnnotationSet> annotations;
 	private Integer font_size = 5;
@@ -96,7 +99,7 @@ public class SplitPanel extends JPanel {
 		
 		JScrollPane scroll_pane = new JScrollPane();
 		sl_doc_panel.putConstraint(SpringLayout.NORTH, scroll_pane, 0, SpringLayout.NORTH, doc_panel);
-		sl_doc_panel.putConstraint(SpringLayout.WEST, scroll_pane, margin, SpringLayout.WEST, doc_panel);
+		sl_doc_panel.putConstraint(SpringLayout.WEST, scroll_pane, margin, SpringLayout.WEST, doc_panel); 
 		sl_doc_panel.putConstraint(SpringLayout.SOUTH, scroll_pane, 0, SpringLayout.SOUTH, doc_panel);
 		sl_doc_panel.putConstraint(SpringLayout.EAST, scroll_pane, -margin, SpringLayout.EAST, doc_panel);
 		doc_panel.add(scroll_pane);
@@ -105,7 +108,7 @@ public class SplitPanel extends JPanel {
 		doc_field.setEditable(false);
 		scroll_pane.setViewportView(doc_field);
 				
-		ano_panel = new JPanel();
+		ano_panel = new JPanel(new BorderLayout());
 		ano_panel.setBorder(null);
 		ano_panel.setBackground(Color.GRAY);
 		GridBagConstraints gbc_edit_ano_panel = new GridBagConstraints();
@@ -177,16 +180,14 @@ public class SplitPanel extends JPanel {
                 	
                 	if(url.equals(master_ref.open_annos_url)) {
                 		master_ref.open_annos_url = null;
-                		master_ref.open_annos = new ArrayList<String>();
+                		master_ref.open_annos = null;
                 	}
                 	else {
 	                	master_ref.open_annos_url = url;
 	                	master_ref.open_annos = new ArrayList<String>();
 	                	
 	                	String[] anno_ids = url.substring(1, url.length()-1).split("/");
-	                	
-	                	ArrayList<String> anno_text = new ArrayList<String>();
-	                	
+	                		                	
 	                	for( String id : anno_ids ) {
 	                		String[] split = id.split("\\.");
 	                		
@@ -245,6 +246,31 @@ public class SplitPanel extends JPanel {
 		
 		SplitPanel master_ref = this;
 		
+		//ANNOFIELD
+		
+		this.anno_field_r = new JTextPane();
+		ano_panel.add(anno_field_r);
+		
+		HTMLEditorKit kit = new HTMLEditorKit();
+	    HTMLDocument doc = new HTMLDocument();
+	    anno_field_r.setEditorKit(kit);
+	    anno_field_r.setDocument(doc);
+	    anno_field_r.setPreferredSize(new Dimension(0,1));
+	    
+		JLabel label1 = new JLabel("    ");
+		ano_panel.add(label1, BorderLayout.WEST);
+		
+		JLabel label2 = new JLabel("    ");
+		ano_panel.add(label2, BorderLayout.EAST);
+		
+		JLabel label3 = new JLabel("    ");
+		ano_panel.add(label3, BorderLayout.NORTH);
+		
+		JLabel label4 = new JLabel("    ");
+		ano_panel.add(label4, BorderLayout.SOUTH);
+	    
+	    anno_field_r.setVisible(false);
+	    
 		//OPEN DOC
 		
 		this.mode = SplitPanel.READ_MODE;
@@ -357,6 +383,8 @@ public class SplitPanel extends JPanel {
 	
 		});
 		open_ano.add(TEST_ANO);
+		
+		refresh();
 	}
 	
 	public void init_edit() {
@@ -444,6 +472,7 @@ public class SplitPanel extends JPanel {
 		int para_ind = 0;
 		String para;
 		while(true) {
+			
 			para = chap.get_paragraph(para_ind);
 			if(para==null||para=="") {
 				break;
@@ -528,8 +557,20 @@ public class SplitPanel extends JPanel {
 		
 		//output
 		
+		//DOC
 		doc_field.setText(html);
 		chapter_field.setText(current_chap.toString());
+		
+		//ANNO
+		if(this.mode==SplitPanel.READ_MODE) {
+			if(open_annos != null) {
+				anno_field_r.setVisible(true);
+				anno_field_r.setText(open_annos.get(0)); //TODO multiple annos
+			}
+			else {
+				anno_field_r.setVisible(false);
+			}
+		}
 	}
 	
 	private void to_chapter(int i) {
@@ -541,7 +582,10 @@ public class SplitPanel extends JPanel {
 			refresh();
 			return;
 		}
-		current_chap = i;
-		refresh();
+		if(current_chap != i) {
+			open_annos = null;
+			current_chap = i;
+			refresh();
+		}
 	}
 }
