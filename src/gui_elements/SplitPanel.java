@@ -44,6 +44,8 @@ public class SplitPanel extends JPanel {
 	private ArrayList<String> open_annos;
 	private String open_annos_url;
 	
+	private int document_text_len;
+	
 	private int mode;
 	
 	public SplitPanel() {
@@ -497,7 +499,7 @@ public class SplitPanel extends JPanel {
 		
 		html += "<html><div>";
 		
-		int num_chars = 0;
+		document_text_len = 0;
 		int para_ind = 0;
 		String para;
 		while(true) {
@@ -507,7 +509,7 @@ public class SplitPanel extends JPanel {
 				break;
 			}
 			
-			num_chars += para.length();
+			document_text_len += para.length();
 			
 			String linked_para = "";
 			String last_url = "/";
@@ -590,9 +592,7 @@ public class SplitPanel extends JPanel {
 		//DOC
 		doc_field.setText(html);
 		scroll_to(scroll_target);
-		doc_field.setCaretPosition(Math.round(current_scroll_percentage()*num_chars)); //This is not guaranteed to move the caret onto the current view, but it should work fine.
-																					   //I can do something smarter in the future, when I have time
-																					   //Although at that point I should probably entirely rewrite this UI
+		
 		
 		chapter_field.setText(current_chap.toString());
 		
@@ -629,20 +629,27 @@ public class SplitPanel extends JPanel {
 	    return scroll_pane.getVerticalScrollBar().getValue();
 	}
 	
-	private float current_scroll_percentage() {
+	private float scroll_percentage(int i) {
 		JScrollBar bar = scroll_pane.getVerticalScrollBar();
 		int mid = scroll_pane.getHeight()/2;
 		int max = bar.getMaximum();
-		int current = bar.getValue();
+		int current = i;
+		
+		if(i <= mid) {
+			mid = 0;
+		}
 		
 		float perc = ((float) current + (float) mid)/max;
-		System.out.println(perc);
 		
 		return perc;
 	}
 	
 	private void scroll_to(int i) {
+		doc_field.setCaretPosition(Math.round(scroll_percentage(i)*document_text_len));  //This is not guaranteed to move the caret onto the current view, but it should work fine.
+		   																				 //I can do something smarter in the future, when I have time
+		   																			     //Although at that point I should probably entirely rewrite this UI
 		scroll_pane.getViewport().setViewPosition(new Point(0,i));
+		
 	}
 
 }
