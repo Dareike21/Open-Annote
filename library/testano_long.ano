@@ -1,0 +1,16 @@
+ID 123
+TG
+VR alpha_ano
+EDHD
+CH 1
+0 20 0 30First annotation!
+0 200 1 15This annotation crosses paragraphs
+5 10 5 30Later annotation
+7 20 7 50Even later annotation
+EDCH
+CH 2
+0 20 0 30Another annotation on the second paragraph
+0 200 1 15Another paragraph-crosser
+5 10 5 30Later annotation 2
+7 20 7 50Even later annotation 2
+EDCH

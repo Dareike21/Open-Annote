@@ -1,6 +1,8 @@
 package gui_elements;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.text.*;
@@ -12,6 +14,8 @@ import text_obj.Document;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -28,6 +32,7 @@ public class SplitPanel extends JPanel {
 	private JMenuBar ano_menu;
 	private JPanel doc_panel;
 	private JPanel ano_panel;
+	private JScrollPane scroll_pane;
 	private JTextPane doc_field;
 	private JPanel nav_panel;
 	private JButton button_back;
@@ -45,6 +50,8 @@ public class SplitPanel extends JPanel {
 	
 	private ArrayList<String> open_annos;
 	private String open_annos_url;
+	
+	private int scroll_target = 0;
 	
 	private int mode;
 	
@@ -97,11 +104,12 @@ public class SplitPanel extends JPanel {
 		int h = Toolkit.getDefaultToolkit().getScreenSize().height;
 		int margin = (int) Math.round(.375*(w-h)); //these margins should make the document appear 8.5x11 no matter the resolution
 		
-		JScrollPane scroll_pane = new JScrollPane();
+		scroll_pane = new JScrollPane();
 		sl_doc_panel.putConstraint(SpringLayout.NORTH, scroll_pane, 0, SpringLayout.NORTH, doc_panel);
 		sl_doc_panel.putConstraint(SpringLayout.WEST, scroll_pane, margin, SpringLayout.WEST, doc_panel); 
 		sl_doc_panel.putConstraint(SpringLayout.SOUTH, scroll_pane, 0, SpringLayout.SOUTH, doc_panel);
 		sl_doc_panel.putConstraint(SpringLayout.EAST, scroll_pane, -margin, SpringLayout.EAST, doc_panel);
+		scroll_pane.getVerticalScrollBar().setUnitIncrement(10);//TODO make scroll speed editable
 		doc_panel.add(scroll_pane);
 		
 		doc_field = new JTextPane(new HTMLDocument());
@@ -196,7 +204,6 @@ public class SplitPanel extends JPanel {
 	                		int hash = Integer.parseInt(split[2]);
 	                		
 	                		String text = master_ref.annotations.get(annoset).get_annochapter(chap).get_annotation_from_hash(hash);
-	                		System.out.println(text);
 	                		
 	                		master_ref.open_annos.add(text);
 	                		
@@ -207,6 +214,9 @@ public class SplitPanel extends JPanel {
                 }
             }
         });
+	    
+	    //TODO move scroll to scroll_target when doc_field updates its text, to maintain position
+	    
 	}
 	
 	private void init_buttons() {
@@ -256,16 +266,14 @@ public class SplitPanel extends JPanel {
 	    anno_field_r.setEditorKit(kit);
 	    anno_field_r.setDocument(doc);
 	    anno_field_r.setPreferredSize(new Dimension(0,1));
+	    anno_field_r.setEditable(false);
 	    
-		JLabel label1 = new JLabel("    ");
+		JLabel label1 = new JLabel("    ");      //THESE ARE JUST HERE FOR VISUAL PADDING
 		ano_panel.add(label1, BorderLayout.WEST);
-		
 		JLabel label2 = new JLabel("    ");
 		ano_panel.add(label2, BorderLayout.EAST);
-		
 		JLabel label3 = new JLabel("    ");
 		ano_panel.add(label3, BorderLayout.NORTH);
-		
 		JLabel label4 = new JLabel("    ");
 		ano_panel.add(label4, BorderLayout.SOUTH);
 	    
@@ -315,15 +323,14 @@ public class SplitPanel extends JPanel {
 		});
 		open_doc.add(CLOSE_DOC);
 		
-		
-		JMenuItem TEST_LOAD = new JMenuItem(new AbstractAction("LOAD TEST") {
+		JMenuItem TEST_LOAD = new JMenuItem(new AbstractAction("LOAD TEST") { //TODO Remove test option
 
 			private static final long serialVersionUID = 1L;
 
 			public void actionPerformed(ActionEvent e) {
 		    	Document doc = new Document();
 		    	try {
-					doc.load_from_file(new File("library/testtext.oad"));
+					doc.load_from_file(new File("library/testtext_long.oad"));
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -354,7 +361,21 @@ public class SplitPanel extends JPanel {
 		    }
 	
 		});
+		
+
+		JMenuItem TEST_MOVE = new JMenuItem(new AbstractAction("MOVE TEST") { //TODO Remove test option
+
+			private static final long serialVersionUID = 1L;
+
+			public void actionPerformed(ActionEvent e) {
+				scroll_to(200);
+				//scroll_pane.getViewport().setViewPosition(new Point(0,200));
+		    }
+	
+		});
+	    
 		open_doc.add(TEST_LOAD);
+		open_doc.add(TEST_MOVE);
 		
 		/////////////////////////////////////////////////////////////////
 		
@@ -365,7 +386,7 @@ public class SplitPanel extends JPanel {
 		//TODO Remove specific annotation
 		//TODO Close all annotations
 		
-		JMenuItem TEST_ANO = new JMenuItem(new AbstractAction("LOAD TEST") {
+		JMenuItem TEST_ANO = new JMenuItem(new AbstractAction("LOAD TEST") { //TODO Remove test option
 
 			private static final long serialVersionUID = 1L;
 
@@ -373,7 +394,7 @@ public class SplitPanel extends JPanel {
 				
 		    	AnnotationSet ano = new AnnotationSet();
 		    	try {
-		    		ano.load_from_file(new File("library/testano.ano"));
+		    		ano.load_from_file(new File("library/testano_long.ano"));
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -385,6 +406,7 @@ public class SplitPanel extends JPanel {
 		open_ano.add(TEST_ANO);
 		
 		refresh();
+		
 	}
 	
 	public void init_edit() {
@@ -430,7 +452,7 @@ public class SplitPanel extends JPanel {
 	public void set_doc(Document contents) {
 		current_chap = 1;
 		document = contents;
-		refresh();
+		refresh(true);
 	}
 	
 	public int add_annotation(AnnotationSet anno) { //returns position that the anno is in the list
@@ -448,8 +470,14 @@ public class SplitPanel extends JPanel {
 	public void set_font_size(int f) {
 		font_size = f;
 	}
-
-	private void refresh() {
+	
+	private void refresh() { //By default, refreshes without resetting scroll
+		refresh(false);
+	}
+	
+	private void refresh(boolean reset_scroll) {
+		
+		scroll_target = current_scroll();
 		
 		if(document==null) {
 			doc_field.setText("<html></html>");
@@ -546,9 +574,7 @@ public class SplitPanel extends JPanel {
 			if(inside_mark) {
 				linked_para += "</a>";
 			}
-			
-			System.out.println(linked_para);
-			
+						
 			html += "<p>"+font_tag+linked_para+"</font></p><br>";
 			para_ind += 1;
 		}
@@ -556,7 +582,7 @@ public class SplitPanel extends JPanel {
 		html += "</div></html>";
 		
 		//output
-		
+				
 		//DOC
 		doc_field.setText(html);
 		chapter_field.setText(current_chap.toString());
@@ -586,7 +612,19 @@ public class SplitPanel extends JPanel {
 			open_annos = null;
 			open_annos_url = null;
 			current_chap = i;
-			refresh();
+			refresh(true);
 		}
 	}
+	
+	private int current_scroll() {
+		JScrollBar verticalScrollBar = scroll_pane.getVerticalScrollBar();
+	    return verticalScrollBar.getValue();
+	}
+	
+	private void scroll_to(int i) {
+		JScrollBar verticalScrollBar = scroll_pane.getVerticalScrollBar();
+	    //verticalScrollBar.setValue(i);
+		scroll_pane.getViewport().setViewPosition(new Point(0,i));
+	}
+
 }
