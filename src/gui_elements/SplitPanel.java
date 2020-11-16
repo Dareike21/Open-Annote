@@ -1,10 +1,7 @@
 package gui_elements;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
+import javax.swing.event.*;
 import javax.swing.text.*;
 import javax.swing.text.html.*;
 
@@ -12,12 +9,8 @@ import text_obj.*;
 import text_obj.Document;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.AdjustmentEvent;
-import java.awt.event.AdjustmentListener;
-import java.io.File;
-import java.io.IOException;
+import java.awt.event.*;
+import java.io.*;
 import java.util.*;
 
 public class SplitPanel extends JPanel {
@@ -40,7 +33,7 @@ public class SplitPanel extends JPanel {
 	private JTextField chapter_field;
 	
 	private JTextPane anno_field_r;
-	private JPanel     anno_field_e;
+	private JPanel    anno_field_e;
 	
 	private Document document;
 	private ArrayList<AnnotationSet> annotations;
@@ -50,8 +43,6 @@ public class SplitPanel extends JPanel {
 	
 	private ArrayList<String> open_annos;
 	private String open_annos_url;
-	
-	private int scroll_target = 0;
 	
 	private int mode;
 	
@@ -178,7 +169,7 @@ public class SplitPanel extends JPanel {
 	    doc_field.setEditorKit(kit);
 	    doc_field.setDocument(doc);
 	    
-	    doc_field.addHyperlinkListener(new HyperlinkListener() {
+	    HyperlinkListener click_annote_listener = new HyperlinkListener() {
 
             @Override
             public void hyperlinkUpdate(HyperlinkEvent e) {
@@ -213,7 +204,9 @@ public class SplitPanel extends JPanel {
                 	
                 }
             }
-        });
+        };
+	    
+	    doc_field.addHyperlinkListener(click_annote_listener);
 	    
 	    //TODO move scroll to scroll_target when doc_field updates its text, to maintain position
 	    
@@ -477,7 +470,14 @@ public class SplitPanel extends JPanel {
 	
 	private void refresh(boolean reset_scroll) {
 		
-		scroll_target = current_scroll();
+		int scroll_target;
+		
+		if(reset_scroll) {
+			scroll_target = 0;
+		}
+		else {
+			scroll_target = current_scroll();
+		}
 		
 		if(document==null) {
 			doc_field.setText("<html></html>");
@@ -497,6 +497,7 @@ public class SplitPanel extends JPanel {
 		
 		html += "<html><div>";
 		
+		int num_chars = 0;
 		int para_ind = 0;
 		String para;
 		while(true) {
@@ -505,6 +506,8 @@ public class SplitPanel extends JPanel {
 			if(para==null||para=="") {
 				break;
 			}
+			
+			num_chars += para.length();
 			
 			String linked_para = "";
 			String last_url = "/";
@@ -571,6 +574,7 @@ public class SplitPanel extends JPanel {
 				linked_para += para.charAt(pos);
 				last_url = url;
 			}
+			
 			if(inside_mark) {
 				linked_para += "</a>";
 			}
@@ -585,6 +589,11 @@ public class SplitPanel extends JPanel {
 				
 		//DOC
 		doc_field.setText(html);
+		scroll_to(scroll_target);
+		doc_field.setCaretPosition(Math.round(current_scroll_percentage()*num_chars)); //This is not guaranteed to move the caret onto the current view, but it should work fine.
+																					   //I can do something smarter in the future, when I have time
+																					   //Although at that point I should probably entirely rewrite this UI
+		
 		chapter_field.setText(current_chap.toString());
 		
 		//ANNO
@@ -617,8 +626,19 @@ public class SplitPanel extends JPanel {
 	}
 	
 	private int current_scroll() {
-		JScrollBar verticalScrollBar = scroll_pane.getVerticalScrollBar();
-	    return verticalScrollBar.getValue();
+	    return scroll_pane.getVerticalScrollBar().getValue();
+	}
+	
+	private float current_scroll_percentage() {
+		JScrollBar bar = scroll_pane.getVerticalScrollBar();
+		int mid = scroll_pane.getHeight()/2;
+		int max = bar.getMaximum();
+		int current = bar.getValue();
+		
+		float perc = ((float) current + (float) mid)/max;
+		System.out.println(perc);
+		
+		return perc;
 	}
 	
 	private void scroll_to(int i) {
