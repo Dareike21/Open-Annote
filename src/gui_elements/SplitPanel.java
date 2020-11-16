@@ -20,6 +20,12 @@ public class SplitPanel extends JPanel {
 	private static final int READ_MODE = 0;
 	private static final int EDIT_MODE = 1;
 	
+	private static final String READ_UNSELECTED_COLOR = "#A6DCFF";
+	private static final String READ_SELECTED_COLOR = "#57A5FF";
+	
+	private static final String EDIT_UNSELECTED_COLOR = "#90EE90";
+	private static final String EDIT_SELECTED_COLOR = "#4EDA5C";
+	
 	private JPanel panel;
 	private JMenuBar doc_menu;
 	private JMenuBar ano_menu;
@@ -538,12 +544,12 @@ public class SplitPanel extends JPanel {
 				String select_color = "red";
 				
 				if(this.mode == READ_MODE) {
-					base_color = "#87CEFA";
-					select_color = "#57A5FF";
+					base_color = READ_UNSELECTED_COLOR;
+					select_color = READ_SELECTED_COLOR;
 				}
 				if(this.mode == EDIT_MODE) {
-					base_color = "#90EE90";
-					select_color = "4EDA5C";
+					base_color = EDIT_UNSELECTED_COLOR;
+					select_color = EDIT_SELECTED_COLOR;
 				}
 				
 				String opening_tag = "<a style=\"background-color:"+base_color+"\" href=\""+url+"\">";
