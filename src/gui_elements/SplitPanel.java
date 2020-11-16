@@ -622,8 +622,6 @@ public class SplitPanel extends JPanel {
 	}
 	
 	private void scroll_to(int i) {
-		JScrollBar verticalScrollBar = scroll_pane.getVerticalScrollBar();
-	    //verticalScrollBar.setValue(i);
 		scroll_pane.getViewport().setViewPosition(new Point(0,i));
 	}
 
