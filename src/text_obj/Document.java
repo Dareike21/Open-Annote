@@ -126,8 +126,6 @@ public class Document {
 	
 	//Testing code is found in SplitPanel.java on the TEST_LOAD
 	public void initialize_empty() {
-		//TODO Check - What information is present in a blank document? 
-		
 		//Format version taken from testtext.oad
 		format_version = "alpha_oad"; 
 		
@@ -146,7 +144,7 @@ public class Document {
 	
 	//Testing code is found in SplitPanel.java on the TEST_LOAD
 	public void save_to_file(String name, String path) throws IOException {
-		//TODO Check IOException, etc. 
+		//TODO What do we want to happen if the given name is an existing file? Throw an error? Overwrite existing file? 
 		
 		//assumes name is in format "testtext" 
 		//assumes path is in format "library/" 

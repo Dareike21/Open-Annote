@@ -118,8 +118,19 @@ public class AnnotationSet {
 	}
 	
 	public void initialize_empty() {
-		
-		//TODO prepare new blank document
+		//Format version taken from testtext.oad
+				format_version = "alpha_oad"; 
+				
+				//Initializes to 0. I can change this if needed - I was 
+				//just unsure of its purpose and how it will be used. 
+				id = 0; 
+				
+				//Sets variables to defaults. 
+				file = null; 
+				reader = null; 
+				tags = new ArrayList<String>();
+				loaded_annochapters = new HashMap<Integer,AnnoChapter>();
+				table_of_contents = new HashMap<Integer,Long>();
 		
 	}
 	
@@ -127,7 +138,74 @@ public class AnnotationSet {
 		
 		//TODO save to file
 		
-	}
+		//assumes name is in format "testano" 
+				//assumes path is in format "library/" 
+				String fileName = path + name + ".ano"; 
+				
+				//Name of new file 
+				File toSave = new File(fileName); 
+				
+				//If a file of the same name exists in the given directory, returns an error. 
+				if(toSave.exists() == true)
+				{
+					System.out.println("A file with this name already exists");
+					return; 
+				}
+				
+				try (//Saves open document to named file. 
+				FileWriter writer = new FileWriter(toSave, true)) {
+					//Saves header 
+					String endline = System.getProperty("line.separator"); 
+					writer.append("ID " + get_id() + endline); 
+					writer.append("TG" + endline);  
+					writer.append("VR " + get_format_ver() + endline); 
+					writer.append("EDHD" + endline);
+					writer.flush(); 
+					
+					//Saves chapters 
+					
+					for( int i = 1; i <= table_of_contents.size(); i++)
+					{
+						writer.append("CH " + i + "\r\n"); 
+						AnnoChapter curChapter = get_annochapter(i); 
+						Set<Integer[]> keyList = curChapter.get_anno_positions(); 
+						
+						for(Integer[] annoKey : keyList)
+						{
+							for(int j = 0; j < 4; j++)
+							{
+								String curInt = annoKey[j].toString();
+								writer.append(curInt);
+								if(j != 3)
+								{
+									writer.append(" ");
+								}
+							}
+							
+							writer.append("");
+							String curAnno = curChapter.get_annotation(annoKey);
+							writer.append(curAnno + endline);
+						}
+						
+						writer.append("EDCH" + "\r\n");
+						writer.flush(); 
+					}
+				} 
+				catch(IOException e)
+				{
+					//Auto-generated catch block 
+					e.printStackTrace();
+				}
+				
+				//Creates new file. 
+				boolean fileCreated;
+				try {
+					fileCreated = toSave.createNewFile();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} 				
+			}
 	
 	public int get_id() {
 		
