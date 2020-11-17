@@ -472,14 +472,93 @@ public class SplitPanel extends JPanel {
 		JMenu open_doc = new JMenu("Open document");
 		doc_menu.add(open_doc);
 		
+		//TODO check open and close document for edit tab 
+		
+		JMenuItem OPEN_DOC = new JMenuItem(new AbstractAction("Open file...") {
+
+			private static final long serialVersionUID = 1L;
+
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fc = new JFileChooser();
+				
+		        int returnVal = fc.showOpenDialog(master_ref);
+
+		        if (returnVal == JFileChooser.APPROVE_OPTION) {
+		            File file = fc.getSelectedFile();
+		            
+		            Document doc = new Document();
+			    	try {
+						doc.load_from_file(file);
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+			    	master_ref.set_doc(doc);
+		            
+		        }
+		    }
+		});
+		open_doc.add(OPEN_DOC);
+		
+		JMenuItem CLOSE_DOC = new JMenuItem(new AbstractAction("Close") {
+
+			private static final long serialVersionUID = 1L;
+
+			public void actionPerformed(ActionEvent e) {
+				master_ref.document.close();
+		    	master_ref.document = null;
+		    	refresh();
+		    }
+		});
+		open_doc.add(CLOSE_DOC);
+		
 		//////////////////////////
 		
 		JMenu open_ano = new JMenu("Open annotation");
 		ano_menu.add(open_ano);
 		
-		//TODO Load annotations
+		//TODO Check load and close all annotations - change for edit tab? 
+		//TODO Save annotation set 
 		//TODO Remove specific annotation
-		//TODO Close all annotations
+		
+		JMenuItem OPEN_ANO = new JMenuItem(new AbstractAction("Open file...") {
+
+			private static final long serialVersionUID = 1L;
+
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fc = new JFileChooser();
+				
+		        int returnVal = fc.showOpenDialog(master_ref);
+
+		        if (returnVal == JFileChooser.APPROVE_OPTION) {
+		            File file = fc.getSelectedFile();
+		            
+		            AnnotationSet ano = new AnnotationSet();
+			    	try {
+						ano.load_from_file(file);
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+			    	master_ref.add_annotation(ano);
+		            
+		        }
+		    }
+		});
+		open_ano.add(OPEN_ANO);
+		
+		JMenuItem CLOSE_ANO = new JMenuItem(new AbstractAction("Close") {
+
+			private static final long serialVersionUID = 1L;
+
+			public void actionPerformed(ActionEvent e) {
+				for(int i = 0; i < annotations.size(); i++)
+				{
+					annotations.get(i).close(); 
+				}
+				annotations.clear(); 
+		    	refresh();
+		    }
+		});
+		open_ano.add(CLOSE_ANO);
 		
 		JMenuItem TEST_ANO = new JMenuItem(new AbstractAction("LOAD TEST") {
 

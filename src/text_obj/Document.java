@@ -143,6 +143,7 @@ public class Document {
 	}
 	
 	//Testing code is found in SplitPanel.java on the TEST_LOAD
+	//TODO change to jfilechooser (like in the load document menu)?
 	public void save_to_file(String name, String path) throws IOException {
 		//TODO What do we want to happen if the given name is an existing file? Throw an error? Overwrite existing file? 
 		

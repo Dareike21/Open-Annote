@@ -134,9 +134,8 @@ public class AnnotationSet {
 		
 	}
 	
+	//TODO change to jfilechooser (like in the load document menu)?
 	public void save_to_file(String name, String path) {
-		
-		//TODO save to file
 		
 		//assumes name is in format "testano" 
 				//assumes path is in format "library/" 
