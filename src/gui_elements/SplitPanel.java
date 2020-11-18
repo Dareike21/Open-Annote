@@ -21,12 +21,6 @@ public class SplitPanel extends JPanel {
 	private static final int READ_MODE = 0;
 	private static final int EDIT_MODE = 1;
 	
-	private static final String READ_UNSELECTED_COLOR = "#A6DCFF";
-	private static final String READ_SELECTED_COLOR = "#57A5FF";
-	
-	private static final String EDIT_UNSELECTED_COLOR = "#90EE90";
-	private static final String EDIT_SELECTED_COLOR = "#4EDA5C";
-	
 	private JPanel panel;
 	private JMenuBar doc_menu;
 	private JMenuBar ano_menu;
@@ -191,9 +185,7 @@ public class SplitPanel extends JPanel {
                 	String url = e.getDescription();
                 	
                 	if(url.equals(master_ref.open_annos_url)) {
-                		master_ref.open_annos_url = null;
-                		master_ref.open_annos = null;
-                		master_ref.open_annos_pos = null;
+                		master_ref.clear_open_annos();
                 	}
                 	else {
 	                	master_ref.open_annos_url = url;
@@ -519,9 +511,7 @@ public class SplitPanel extends JPanel {
             	int curchap = master_ref.current_chap;
             	Integer[] curpos = master_ref.open_annos_pos.get(0);
             	master_ref.annotations.get(0).get_annochapter(curchap).delete_annotation_by_pos(curpos);
-            	master_ref.open_annos = null;
-            	master_ref.open_annos_pos = null;
-            	master_ref.open_annos_url = null;
+            	master_ref.clear_open_annos();
             	refresh();
             }
         });
@@ -681,8 +671,11 @@ public class SplitPanel extends JPanel {
 				{
 					annotations.get(i).close(); 
 				}
-				annotations.clear(); 
+				annotations.clear();
+				clear_open_annos();
 		    	refresh();
+		    	
+		    	
 		    }
 		});
 		open_ano.add(CLOSE_ANO);
@@ -833,12 +826,12 @@ public class SplitPanel extends JPanel {
 				String select_color = "red";
 				
 				if(this.mode == READ_MODE) {
-					base_color = READ_UNSELECTED_COLOR;
-					select_color = READ_SELECTED_COLOR;
+					base_color = MyColors.READ_UNSELECTED_COLOR;
+					select_color = MyColors.READ_SELECTED_COLOR;
 				}
 				if(this.mode == EDIT_MODE) {
-					base_color = EDIT_UNSELECTED_COLOR;
-					select_color = EDIT_SELECTED_COLOR;
+					base_color = MyColors.EDIT_UNSELECTED_COLOR;
+					select_color = MyColors.EDIT_SELECTED_COLOR;
 				}
 				
 				String opening_tag = "<a style=\"background-color:"+base_color+"\" href=\""+url+"\">";
@@ -955,5 +948,10 @@ public class SplitPanel extends JPanel {
 		scroll_pane.getViewport().setViewPosition(new Point(0,i));
 		
 	}
-
+	
+	private void clear_open_annos() {
+		open_annos_url = null;
+		open_annos = null;
+		open_annos_pos = null;
+	}
 }
