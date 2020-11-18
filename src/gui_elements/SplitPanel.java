@@ -363,9 +363,47 @@ public class SplitPanel extends JPanel {
 		JMenu open_ano = new JMenu("Open annotation set");
 		ano_menu.add(open_ano);
 		
-		//TODO Load annotations
 		//TODO Remove specific annotation
-		//TODO Close all annotations
+		
+		JMenuItem OPEN_ANO = new JMenuItem(new AbstractAction("Open file...") {
+
+			private static final long serialVersionUID = 1L;
+
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fc = new JFileChooser();
+				
+		        int returnVal = fc.showOpenDialog(master_ref);
+
+		        if (returnVal == JFileChooser.APPROVE_OPTION) {
+		            File file = fc.getSelectedFile();
+		            
+		            AnnotationSet ano = new AnnotationSet();
+			    	try {
+						ano.load_from_file(file);
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+			    	master_ref.add_annotation(ano);
+		            
+		        }
+		    }
+		});
+		open_ano.add(OPEN_ANO);
+		
+		JMenuItem CLOSE_ANO = new JMenuItem(new AbstractAction("Close") {
+
+			private static final long serialVersionUID = 1L;
+
+			public void actionPerformed(ActionEvent e) {
+				for(int i = 0; i < annotations.size(); i++)
+				{
+					annotations.get(i).close(); 
+				}
+				annotations.clear(); 
+		    	refresh();
+		    }
+		});
+		open_ano.add(CLOSE_ANO);
 		
 		JMenuItem TEST_ANO = new JMenuItem(new AbstractAction("LOAD TEST") { //TODO Remove test option
 
@@ -380,9 +418,21 @@ public class SplitPanel extends JPanel {
 					e1.printStackTrace();
 				}
 		    	master_ref.add_annotation(ano);
+		    	
+		    	//The following code tests the initialize_empty() and save_to_file() functions for annotations 
+				//If successful, two new files should be created in the "library" folder. 
+				//One is named "saveanotest.ano" and is identical to "testano_long.ano". 
+				//The other is named "blankanotest.ano" and should be a blank document.
+				//Before testing, if the files "saveanotest.ano" and "blankanotest.ano" should be deleted from the "library" folder if they exist. 
+		    	//The program will still run if they exist, but (as of now) the program will return a "file already exists" error and not save. 
+		    	/*
+		    	ano.save_to_file("saveanotest", "library/");
 				
-		    }
-	
+		    	ano.initialize_empty();
+		    	ano.save_to_file("blankanotest", "library/");
+		    	*/
+				
+		    }	
 		});
 		open_ano.add(TEST_ANO);
 		
@@ -424,8 +474,12 @@ public class SplitPanel extends JPanel {
 		JMenu open_doc = new JMenu("Open document");
 		doc_menu.add(open_doc);
 		
+		//TODO check open and close document for edit tab 
+		
 		JMenuItem OPEN_DOC = new JMenuItem(new AbstractAction("Open file...") {
+
 			private static final long serialVersionUID = 1L;
+
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser fc = new JFileChooser();
 				
@@ -507,9 +561,49 @@ public class SplitPanel extends JPanel {
 		JMenu open_ano = new JMenu("Open annotation set");
 		ano_menu.add(open_ano);
 		
-		//TODO Load annotations
+		//TODO Check load and close all annotations - change for edit tab? 
+		//TODO Save annotation set 
 		//TODO Remove specific annotation
-		//TODO Close all annotations
+		
+		JMenuItem OPEN_ANO = new JMenuItem(new AbstractAction("Open file...") {
+
+			private static final long serialVersionUID = 1L;
+
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fc = new JFileChooser();
+				
+		        int returnVal = fc.showOpenDialog(master_ref);
+
+		        if (returnVal == JFileChooser.APPROVE_OPTION) {
+		            File file = fc.getSelectedFile();
+		            
+		            AnnotationSet ano = new AnnotationSet();
+			    	try {
+						ano.load_from_file(file);
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+			    	master_ref.add_annotation(ano);
+		            
+		        }
+		    }
+		});
+		open_ano.add(OPEN_ANO);
+		
+		JMenuItem CLOSE_ANO = new JMenuItem(new AbstractAction("Close") {
+
+			private static final long serialVersionUID = 1L;
+
+			public void actionPerformed(ActionEvent e) {
+				for(int i = 0; i < annotations.size(); i++)
+				{
+					annotations.get(i).close(); 
+				}
+				annotations.clear(); 
+		    	refresh();
+		    }
+		});
+		open_ano.add(CLOSE_ANO);
 		
 		JMenuItem NEW_ANO = new JMenuItem(new AbstractAction("New annotation...") {
 
