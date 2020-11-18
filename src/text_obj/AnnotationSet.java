@@ -5,6 +5,9 @@ import java.util.*;
 
 public class AnnotationSet {
 	
+	private static final int READ_MODE = 0;
+	private static final int WRITE_MODE = 1;
+	
 	private String format_version = null;
 	private int id = 0;
 	
@@ -15,6 +18,8 @@ public class AnnotationSet {
 	private HashMap<Integer, AnnoChapter> loaded_annochapters;
 	private HashMap<Integer,Long> table_of_contents;
 	
+	private int mode = READ_MODE;
+	
 	public AnnotationSet() {
 		
 		this.tags = new ArrayList<String>();
@@ -24,6 +29,8 @@ public class AnnotationSet {
 	}
 	
 	public void load_from_file(File in_file) throws IOException {
+		
+		this.mode = READ_MODE;
 		
 		this.file = in_file;
 		this.reader = new RandomAccessFile(this.file,"r");
@@ -114,12 +121,14 @@ public class AnnotationSet {
 		this.loaded_annochapters.put(chapter_num,new_annochap);
 
 		
-		//TODO unloading in case of large documents
+		//TODO unloading in case of large documents [ONLY IN READ MODE]
 	}
 	
 	public void initialize_empty() {
 		
 		//TODO prepare new blank document
+		
+		this.mode = WRITE_MODE;
 		
 	}
 	
@@ -147,12 +156,20 @@ public class AnnotationSet {
 	
 	public AnnoChapter get_annochapter(Integer i) {
 		
-		if(!this.loaded_annochapters.containsKey(i)) {
-			try {
-				this.load_chapter(i);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		if(this.mode == READ_MODE) {
+		
+			if(!this.loaded_annochapters.containsKey(i)) {
+				try {
+					this.load_chapter(i);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}			
+		}
+		else if (this.mode == WRITE_MODE) {
+			if(!this.loaded_annochapters.containsKey(i)) {
+				this.loaded_annochapters.put(i,new AnnoChapter());
 			}
 		}
 		

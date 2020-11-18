@@ -1,11 +1,14 @@
 package text_obj;
 
+import java.awt.Point;
 import java.util.*;
 
 public class AnnoChapter {
 	
 	private HashMap<Integer[],String> annotations;    //key = {START PARAGRAPH, START CHARACTER, END PARAGRAPH, END CHARACTER}
 	private HashMap<Integer,String> hash_annotations; //HASH:STRING
+	
+	//TODO FIX HASHING COLLISIONS FOR SAME TEXT (shouldn't be a problem for now, though);
 	
 	public AnnoChapter() {
 		this.annotations = new HashMap<Integer[],String>();

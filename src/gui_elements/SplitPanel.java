@@ -5,6 +5,7 @@ import javax.swing.event.*;
 import javax.swing.text.*;
 import javax.swing.text.html.*;
 
+import main.Tester;
 import text_obj.*;
 import text_obj.Document;
 
@@ -38,8 +39,8 @@ public class SplitPanel extends JPanel {
 	private JButton button_forward;
 	private JTextField chapter_field;
 	
-	private JTextPane anno_field_r;
-	private JPanel    anno_field_e;
+	private JTextPane anno_field_read;
+	private JPanel    anno_field_edit;
 	
 	private Document document;
 	private ArrayList<AnnotationSet> annotations;
@@ -205,6 +206,7 @@ public class SplitPanel extends JPanel {
 	                		String text = master_ref.annotations.get(annoset).get_annochapter(chap).get_annotation_from_hash(hash);
 	                		
 	                		master_ref.open_annos.add(text);
+	                		System.out.println(text);
 	                		
 	                	}
                 	}
@@ -257,17 +259,19 @@ public class SplitPanel extends JPanel {
 		
 		SplitPanel master_ref = this;
 		
+		this.mode = SplitPanel.READ_MODE;
+		
 		//ANNOFIELD
 		
-		this.anno_field_r = new JTextPane();
-		ano_panel.add(anno_field_r);
+		this.anno_field_read = new JTextPane();
+		ano_panel.add(anno_field_read);
 		
 		HTMLEditorKit kit = new HTMLEditorKit();
 	    HTMLDocument doc = new HTMLDocument();
-	    anno_field_r.setEditorKit(kit);
-	    anno_field_r.setDocument(doc);
-	    anno_field_r.setPreferredSize(new Dimension(0,1));
-	    anno_field_r.setEditable(false);
+	    anno_field_read.setEditorKit(kit);
+	    anno_field_read.setDocument(doc);
+	    anno_field_read.setPreferredSize(new Dimension(0,1));
+	    anno_field_read.setEditable(false);
 	    
 		JLabel label1 = new JLabel("    ");      //THESE ARE JUST HERE FOR VISUAL PADDING
 		ano_panel.add(label1, BorderLayout.WEST);
@@ -278,12 +282,11 @@ public class SplitPanel extends JPanel {
 		JLabel label4 = new JLabel("    ");
 		ano_panel.add(label4, BorderLayout.SOUTH);
 	    
-	    anno_field_r.setVisible(false);
+	    anno_field_read.setVisible(false);
 	    
 		//OPEN DOC
 		
-		this.mode = SplitPanel.READ_MODE;
-		
+
 		JMenu open_doc = new JMenu("Open document");
 		doc_menu.add(open_doc);
 		
@@ -336,29 +339,6 @@ public class SplitPanel extends JPanel {
 					e1.printStackTrace();
 				}
 		    	master_ref.set_doc(doc);
-		    	
-		    	//The following code tests the initialize_empty() and save_to_file() functions. 
-				//If successful, two new files should be created in the "library" folder. 
-				//One is named "savetest.oad" and is identical to "testtext.oad". 
-				//The other is named "blanktest.oad" and should be a blank document.
-				//Before testing, if the files "savetest.oad" and "blanktest.oad" should be deleted from the "library" folder if they exist. 
-		    	//The program will still run if they exist, but (as of now) the program will return a "file already exists" error and not save. 
-		    	/*
-		    	try {
-					doc.save_to_file("savetest", "library/");
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} 
-		    	
-		    	doc.initialize_empty();
-		    	try {
-					doc.save_to_file("blanktest", "library/");
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				*/
 		    }
 	
 		});
@@ -380,7 +360,7 @@ public class SplitPanel extends JPanel {
 		
 		/////////////////////////////////////////////////////////////////
 		
-		JMenu open_ano = new JMenu("Open annotation");
+		JMenu open_ano = new JMenu("Open annotation set");
 		ano_menu.add(open_ano);
 		
 		//TODO Load annotations
@@ -412,42 +392,144 @@ public class SplitPanel extends JPanel {
 	
 	public void init_edit() {
 		
-		SplitPanel master_ref=this;
-		
-		//initializes split pane with menus/objs for edit tab
+		SplitPanel master_ref = this;
 		
 		this.mode = SplitPanel.EDIT_MODE;
 		
+		//ANNOFIELD
+		
+		this.anno_field_edit = new JPanel();
+		ano_panel.add(anno_field_edit);
+		
+		/*HTMLEditorKit kit = new HTMLEditorKit();
+	    HTMLDocument doc = new HTMLDocument();
+	    anno_field_read.setEditorKit(kit);
+	    anno_field_read.setDocument(doc);
+	    anno_field_read.setPreferredSize(new Dimension(0,1));
+	    anno_field_read.setEditable(false);*/
+	    
+		JLabel label1 = new JLabel("    ");      //THESE ARE JUST HERE FOR VISUAL PADDING
+		ano_panel.add(label1, BorderLayout.WEST);
+		JLabel label2 = new JLabel("    ");
+		ano_panel.add(label2, BorderLayout.EAST);
+		JLabel label3 = new JLabel("    ");
+		ano_panel.add(label3, BorderLayout.NORTH);
+		JLabel label4 = new JLabel("    ");
+		ano_panel.add(label4, BorderLayout.SOUTH);
+	    
+		anno_field_edit.setVisible(false);
+	    
+		//OPEN DOC
+				
 		JMenu open_doc = new JMenu("Open document");
 		doc_menu.add(open_doc);
 		
-		//////////////////////////
+		JMenuItem OPEN_DOC = new JMenuItem(new AbstractAction("Open file...") {
+			private static final long serialVersionUID = 1L;
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fc = new JFileChooser();
+				
+		        int returnVal = fc.showOpenDialog(master_ref);
+
+		        if (returnVal == JFileChooser.APPROVE_OPTION) {
+		            File file = fc.getSelectedFile();
+		            
+		            Document doc = new Document();
+			    	try {
+						doc.load_from_file(file);
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+			    	master_ref.set_doc(doc);
+		            
+		        }
+		    }
+		});
+		open_doc.add(OPEN_DOC);
 		
-		JMenu open_ano = new JMenu("Open annotation");
+		JMenuItem CLOSE_DOC = new JMenuItem(new AbstractAction("Close") {
+
+			private static final long serialVersionUID = 1L;
+
+			public void actionPerformed(ActionEvent e) {
+				master_ref.document.close();
+		    	master_ref.document = null;
+		    	refresh();
+		    }
+		});
+		open_doc.add(CLOSE_DOC);
+		
+		JMenuItem TEST_LOAD = new JMenuItem(new AbstractAction("LOAD TEST") { //TODO Remove test option
+
+			private static final long serialVersionUID = 1L;
+
+			public void actionPerformed(ActionEvent e) {
+		    	Document doc = new Document();
+		    	try {
+					doc.load_from_file(new File("library/testtext_long.oad"));
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+		    	master_ref.set_doc(doc);
+	
+		    }
+	
+		});
+		open_doc.add(TEST_LOAD);
+		
+		/////////////////////////////////////////////////////////////////
+		
+		JButton add_button = new JButton("+");
+		add_button.setPreferredSize(new Dimension(0,0));
+		add_button.setFont(new Font("Arial", Font.PLAIN, 30));
+		
+		add_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	if(doc_field.getSelectedText() != null) {
+	            	int start = doc_field.getSelectionStart();
+	            	int end = doc_field.getSelectionEnd();
+	            	
+	            	Point start_point = document.get_chapter(current_chap).pos_to_para_pos(start);
+	            	Point end_point   = document.get_chapter(current_chap).pos_to_para_pos(end);
+	            	
+	            	Integer[] key = { start_point.x,start_point.y,
+	            			          end_point.x,  end_point.y-1   };
+	            		            	
+	            	annotations.get(0).get_annochapter(current_chap).add_annotation(key, Tester.random_string());
+	            	refresh();
+            	}	
+            }
+        });
+		
+		ano_menu.add(add_button);
+		
+		JMenu open_ano = new JMenu("Open annotation set");
 		ano_menu.add(open_ano);
 		
 		//TODO Load annotations
 		//TODO Remove specific annotation
 		//TODO Close all annotations
 		
-		JMenuItem TEST_ANO = new JMenuItem(new AbstractAction("LOAD TEST") {
+		JMenuItem NEW_ANO = new JMenuItem(new AbstractAction("New annotation...") {
 
 			private static final long serialVersionUID = 1L;
 
 			public void actionPerformed(ActionEvent e) {
 				
 		    	AnnotationSet ano = new AnnotationSet();
-		    	try {
-		    		ano.load_from_file(new File("library/testano.ano"));
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
+		    	ano.initialize_empty();
 		    	master_ref.add_annotation(ano);
+		    	
+		    	System.out.println(master_ref.annotations.size());
 				
 		    }
 	
 		});
-		open_ano.add(TEST_ANO);
+		open_ano.add(NEW_ANO);
+		
+		refresh();
+				
 	}
 
 	public void set_doc(Document contents) {
@@ -457,6 +539,12 @@ public class SplitPanel extends JPanel {
 	}
 	
 	public int add_annotation(AnnotationSet anno) { //returns position that the anno is in the list
+		
+		if(mode == EDIT_MODE && annotations.size() > 0) {
+			//TODO are you sure you want to overwrite?
+			annotations = new ArrayList<AnnotationSet>();
+		}
+		
 		int pos = annotations.size();
 		annotations.add(anno);
 		refresh();
@@ -605,11 +693,11 @@ public class SplitPanel extends JPanel {
 		//ANNO
 		if(this.mode==SplitPanel.READ_MODE) {
 			if(open_annos != null) {
-				anno_field_r.setVisible(true);
-				anno_field_r.setText(open_annos.get(0)); //TODO multiple annos
+				anno_field_read.setVisible(true);
+				anno_field_read.setText(open_annos.get(0)); //TODO multiple annos
 			}
 			else {
-				anno_field_r.setVisible(false);
+				anno_field_read.setVisible(false);
 			}
 		}
 	}
