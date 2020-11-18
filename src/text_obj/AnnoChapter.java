@@ -23,7 +23,7 @@ public class AnnoChapter {
 		this.hash_positions.put(anno.hashCode(),key);
 	}
 	
-	public void overwrite_annotation(Integer[] key, String anno) {
+	public void overwrite_annotation(Integer[] key, String anno) { //This could probably just be default behavior, but the different names make it more clear what is going on
 		String old_anno = annotations.remove(key);
 		if(old_anno != null) {
 			Integer hash = old_anno.hashCode();

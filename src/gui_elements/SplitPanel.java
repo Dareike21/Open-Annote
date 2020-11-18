@@ -499,7 +499,7 @@ public class SplitPanel extends JPanel {
             	
             	open_annos.set(0, newtext);
             	
-				String url = "/";
+				String url = "/"; //Generating this url should probably have its own function, but it's fine for now
 				url += Integer.toString(current_chap); //chapter
 				url += ".";
 				url += Integer.toString(0); //which of the loaded annotation sets
