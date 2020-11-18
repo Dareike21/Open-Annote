@@ -39,8 +39,11 @@ public class SplitPanel extends JPanel {
 	private JButton button_forward;
 	private JTextField chapter_field;
 	
-	private JTextPane anno_field_read;
-	private JPanel    anno_field_edit;
+	private JTextPane anno_field;
+	
+	private JPanel    edit_anno_pane; //THESE ARE ONLY USED IN EDIT MODE
+	private JButton   save_anno_button;
+	private JButton   delete_anno_button;
 	
 	private Document document;
 	private ArrayList<AnnotationSet> annotations;
@@ -50,6 +53,7 @@ public class SplitPanel extends JPanel {
 	
 	private ArrayList<String> open_annos;
 	private String open_annos_url;
+	private ArrayList<Integer[]> open_annos_pos;
 	
 	private int document_text_len;
 	
@@ -189,10 +193,12 @@ public class SplitPanel extends JPanel {
                 	if(url.equals(master_ref.open_annos_url)) {
                 		master_ref.open_annos_url = null;
                 		master_ref.open_annos = null;
+                		master_ref.open_annos_pos = null;
                 	}
                 	else {
 	                	master_ref.open_annos_url = url;
 	                	master_ref.open_annos = new ArrayList<String>();
+	                	master_ref.open_annos_pos = new ArrayList<Integer[]>();
 	                	
 	                	String[] anno_ids = url.substring(1, url.length()-1).split("/");
 	                		                	
@@ -204,10 +210,16 @@ public class SplitPanel extends JPanel {
 	                		int hash = Integer.parseInt(split[2]);
 	                		
 	                		String text = master_ref.annotations.get(annoset).get_annochapter(chap).get_annotation_from_hash(hash);
+	                		Integer[] pos = master_ref.annotations.get(annoset).get_annochapter(chap).get_position_from_hash(hash);
 	                		
 	                		master_ref.open_annos.add(text);
+	                		master_ref.open_annos_pos.add(pos);
 	                		System.out.println(text);
 	                		
+	                	}
+	                	
+	                	if(mode == EDIT_MODE) {
+	                		master_ref.save_anno_button.setEnabled(false);
 	                	}
                 	}
                 	refresh();
@@ -263,15 +275,15 @@ public class SplitPanel extends JPanel {
 		
 		//ANNOFIELD
 		
-		this.anno_field_read = new JTextPane();
-		ano_panel.add(anno_field_read);
+		this.anno_field = new JTextPane();
+		ano_panel.add(anno_field);
 		
 		HTMLEditorKit kit = new HTMLEditorKit();
 	    HTMLDocument doc = new HTMLDocument();
-	    anno_field_read.setEditorKit(kit);
-	    anno_field_read.setDocument(doc);
-	    anno_field_read.setPreferredSize(new Dimension(0,1));
-	    anno_field_read.setEditable(false);
+	    anno_field.setEditorKit(kit);
+	    anno_field.setDocument(doc);
+	    anno_field.setPreferredSize(new Dimension(0,1));
+	    anno_field.setEditable(false);
 	    
 		JLabel label1 = new JLabel("    ");      //THESE ARE JUST HERE FOR VISUAL PADDING
 		ano_panel.add(label1, BorderLayout.WEST);
@@ -282,7 +294,7 @@ public class SplitPanel extends JPanel {
 		JLabel label4 = new JLabel("    ");
 		ano_panel.add(label4, BorderLayout.SOUTH);
 	    
-	    anno_field_read.setVisible(false);
+	    anno_field.setVisible(false);
 	    
 		//OPEN DOC
 		
@@ -448,16 +460,85 @@ public class SplitPanel extends JPanel {
 		
 		//ANNOFIELD
 		
-		this.anno_field_edit = new JPanel();
-		ano_panel.add(anno_field_edit);
+		edit_anno_pane = new JPanel( new BorderLayout());
+		ano_panel.add(edit_anno_pane, BorderLayout.CENTER);
 		
-		/*HTMLEditorKit kit = new HTMLEditorKit();
-	    HTMLDocument doc = new HTMLDocument();
-	    anno_field_read.setEditorKit(kit);
-	    anno_field_read.setDocument(doc);
-	    anno_field_read.setPreferredSize(new Dimension(0,1));
-	    anno_field_read.setEditable(false);*/
+		this.anno_field = new JTextPane();
+		anno_field.setPreferredSize(new Dimension(0,1));
+		anno_field.getDocument().addDocumentListener( new DocumentListener() {
+		    
+		    public void insertUpdate(DocumentEvent e) {
+		    	change_check();
+		    }
+		    public void removeUpdate(DocumentEvent e) {
+		    	change_check();
+		    }
+		    public void changedUpdate(DocumentEvent e) {
+		    	change_check();
+		    }
+
+		    public void change_check() {
+		    	String cur_text = master_ref.anno_field.getText();
+		    	if(master_ref.open_annos.get(0).equals(cur_text)) {
+		    		save_anno_button.setEnabled(false);
+		    	}
+		    	else {
+		    		save_anno_button.setEnabled(true);
+		    	}
+		    }
+		});
+		edit_anno_pane.add(anno_field);
 	    
+	    JPanel button_holder = new JPanel( new GridLayout(0,2));
+	    
+		save_anno_button = new JButton("Save");
+		delete_anno_button = new JButton("Delete");
+		
+		save_anno_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	int curchap = master_ref.current_chap;
+            	Integer[] curpos = master_ref.open_annos_pos.get(0);
+            	String newtext = master_ref.anno_field.getText();
+            	master_ref.annotations.get(0).get_annochapter(curchap).overwrite_annotation(curpos,newtext);
+            	
+            	open_annos.set(0, newtext);
+            	
+				String url = "/";
+				url += Integer.toString(current_chap); //chapter
+				url += ".";
+				url += Integer.toString(0); //which of the loaded annotation sets
+				url += ".";
+				url += Integer.toString(newtext.hashCode()); //hashed id of the annotations
+				url += "/";
+				
+				open_annos_url = url;
+            	
+            	refresh();
+            }
+        });
+		
+		delete_anno_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	int curchap = master_ref.current_chap;
+            	Integer[] curpos = master_ref.open_annos_pos.get(0);
+            	master_ref.annotations.get(0).get_annochapter(curchap).delete_annotation_by_pos(curpos);
+            	master_ref.open_annos = null;
+            	master_ref.open_annos_pos = null;
+            	master_ref.open_annos_url = null;
+            	refresh();
+            }
+        });
+		
+		save_anno_button.setPreferredSize(new Dimension(0,30));
+		delete_anno_button.setPreferredSize(new Dimension(0,30));
+		
+		button_holder.add(save_anno_button);
+		button_holder.add(delete_anno_button);
+		
+		edit_anno_pane.add(button_holder, BorderLayout.SOUTH);
+		
 		JLabel label1 = new JLabel("    ");      //THESE ARE JUST HERE FOR VISUAL PADDING
 		ano_panel.add(label1, BorderLayout.WEST);
 		JLabel label2 = new JLabel("    ");
@@ -467,7 +548,7 @@ public class SplitPanel extends JPanel {
 		JLabel label4 = new JLabel("    ");
 		ano_panel.add(label4, BorderLayout.SOUTH);
 	    
-		anno_field_edit.setVisible(false);
+		edit_anno_pane.setVisible(false);
 	    
 		//OPEN DOC
 				
@@ -544,7 +625,7 @@ public class SplitPanel extends JPanel {
 	            	int start = doc_field.getSelectionStart();
 	            	int end = doc_field.getSelectionEnd();
 	            	
-	            	Point start_point = document.get_chapter(current_chap).pos_to_para_pos(start);
+	            	Point start_point = document.get_chapter(current_chap).pos_to_para_pos(start); //TODO PREVENT ANNO COLLISIONS
 	            	Point end_point   = document.get_chapter(current_chap).pos_to_para_pos(end);
 	            	
 	            	Integer[] key = { start_point.x,start_point.y,
@@ -658,7 +739,7 @@ public class SplitPanel extends JPanel {
 		refresh(false);
 	}
 	
-	private void refresh(boolean reset_scroll) {
+	private void refresh(boolean reset_scroll) { //TODO split up refresh (maybe not possible)
 		
 		int scroll_target;
 		
@@ -787,11 +868,20 @@ public class SplitPanel extends JPanel {
 		//ANNO
 		if(this.mode==SplitPanel.READ_MODE) {
 			if(open_annos != null) {
-				anno_field_read.setVisible(true);
-				anno_field_read.setText(open_annos.get(0)); //TODO multiple annos
+				anno_field.setVisible(true);
+				anno_field.setText(open_annos.get(0)); //TODO multiple annos
 			}
 			else {
-				anno_field_read.setVisible(false);
+				anno_field.setVisible(false);
+			}
+		}
+		else if(this.mode==SplitPanel.EDIT_MODE) { //Right now these are the same, but they may need to be different in the future
+			if(open_annos != null) {
+				edit_anno_pane.setVisible(true);
+				anno_field.setText(open_annos.get(0)); //TODO multiple annos
+			}
+			else {
+				edit_anno_pane.setVisible(false);
 			}
 		}
 	}

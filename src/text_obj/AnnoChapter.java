@@ -7,17 +7,30 @@ public class AnnoChapter {
 	
 	private HashMap<Integer[],String> annotations;    //key = {START PARAGRAPH, START CHARACTER, END PARAGRAPH, END CHARACTER}
 	private HashMap<Integer,String> hash_annotations; //HASH:STRING
+	private HashMap<Integer,Integer[]> hash_positions;//HASH:key
 	
 	//TODO FIX HASHING COLLISIONS FOR SAME TEXT (shouldn't be a problem for now, though);
 	
 	public AnnoChapter() {
 		this.annotations = new HashMap<Integer[],String>();
 		this.hash_annotations = new HashMap<Integer,String>();
+		this.hash_positions   = new HashMap<Integer,Integer[]>();
 	}
 	
 	public void add_annotation(Integer[] key, String anno) {
 		this.annotations.put(key, anno);
 		this.hash_annotations.put(anno.hashCode(),anno);
+		this.hash_positions.put(anno.hashCode(),key);
+	}
+	
+	public void overwrite_annotation(Integer[] key, String anno) {
+		String old_anno = annotations.remove(key);
+		if(old_anno != null) {
+			Integer hash = old_anno.hashCode();
+			hash_annotations.remove(hash);
+			hash_positions.remove(hash);
+		}
+		add_annotation(key,anno);
 	}
 	
 	public String get_annotation(Integer[] key) {
@@ -26,6 +39,19 @@ public class AnnoChapter {
 	
 	public String get_annotation_from_hash(Integer hash) {
 		return this.hash_annotations.get(hash);
+	}
+	
+	public Integer[] get_position_from_hash(Integer hash) {
+		return this.hash_positions.get(hash);
+	}
+	
+	public void delete_annotation_by_pos(Integer[] pos) {
+		String anno = annotations.remove(pos);
+		if(anno != null) {
+			Integer hash = anno.hashCode();
+			hash_annotations.remove(hash);
+			hash_positions.remove(hash);
+		}
 	}
 	
 	public Set<Integer[]> get_anno_positions() {
