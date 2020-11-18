@@ -143,23 +143,9 @@ public class AnnotationSet {
 		
 	}
 	
-	//TODO change to jfilechooser (like in the load document menu)?
-	public void save_to_file(String name, String path) {
+	
+	public void save_to_file(File toSave) {
 		
-		//assumes name is in format "testano" 
-				//assumes path is in format "library/" 
-				String fileName = path + name + ".ano"; 
-				
-				//Name of new file 
-				File toSave = new File(fileName); 
-				
-				//If a file of the same name exists in the given directory, returns an error. 
-				if(toSave.exists() == true)
-				{
-					System.out.println("A file with this name already exists");
-					return; 
-				}
-				
 				try (//Saves open document to named file. 
 				FileWriter writer = new FileWriter(toSave, true)) {
 					//Saves header 
