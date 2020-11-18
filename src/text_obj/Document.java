@@ -142,24 +142,8 @@ public class Document {
 		
 	}
 	
-	//Testing code is found in SplitPanel.java on the TEST_LOAD
-	//TODO change to jfilechooser (like in the load document menu)?
-	public void save_to_file(String name, String path) throws IOException {
-		//TODO What do we want to happen if the given name is an existing file? Throw an error? Overwrite existing file? 
-		
-		//assumes name is in format "testtext" 
-		//assumes path is in format "library/" 
-		String fileName = path + name + ".oad"; 
-		
-		//Name of new file 
-		File toSave = new File(fileName); 
-		
-		//If a file of the same name exists in the given directory, returns an error. 
-		if(toSave.exists() == true)
-		{
-			System.out.println("A file with this name already exists");
-			return; 
-		}
+
+	public void save_to_file(File toSave) throws IOException {
 		
 		try (//Saves open document to named file. 
 		FileWriter writer = new FileWriter(toSave, true)) {

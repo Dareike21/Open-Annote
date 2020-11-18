@@ -334,6 +334,14 @@ public class SplitPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				master_ref.document.close();
 		    	master_ref.document = null;
+		    	
+		    	//Closes annotations when a document is closed 
+					for(int i = 0; i < annotations.size(); i++)
+					{
+						annotations.get(i).close(); 
+					}
+					annotations.clear(); 
+						
 		    	refresh();
 		    }
 		});
@@ -430,19 +438,6 @@ public class SplitPanel extends JPanel {
 					e1.printStackTrace();
 				}
 		    	master_ref.add_annotation(ano);
-		    	
-		    	//The following code tests the initialize_empty() and save_to_file() functions for annotations 
-				//If successful, two new files should be created in the "library" folder. 
-				//One is named "saveanotest.ano" and is identical to "testano_long.ano". 
-				//The other is named "blankanotest.ano" and should be a blank document.
-				//Before testing, if the files "saveanotest.ano" and "blankanotest.ano" should be deleted from the "library" folder if they exist. 
-		    	//The program will still run if they exist, but (as of now) the program will return a "file already exists" error and not save. 
-		    	/*
-		    	ano.save_to_file("saveanotest", "library/");
-				
-		    	ano.initialize_empty();
-		    	ano.save_to_file("blankanotest", "library/");
-		    	*/
 				
 		    }	
 		});
@@ -582,6 +577,7 @@ public class SplitPanel extends JPanel {
 		});
 		open_doc.add(OPEN_DOC);
 		
+		//TODO Save annotations warning 
 		JMenuItem CLOSE_DOC = new JMenuItem(new AbstractAction("Close") {
 
 			private static final long serialVersionUID = 1L;
@@ -589,6 +585,13 @@ public class SplitPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				master_ref.document.close();
 		    	master_ref.document = null;
+		    	
+		    	//Closes annotations when document is closed 
+		    	for(int i = 0; i < annotations.size(); i++)
+				{
+					annotations.get(i).close(); 
+				}
+				annotations.clear(); 
 		    	refresh();
 		    }
 		});
@@ -642,8 +645,6 @@ public class SplitPanel extends JPanel {
 		JMenu open_ano = new JMenu("Open annotation set");
 		ano_menu.add(open_ano);
 		
-		//TODO Check load and close all annotations - change for edit tab? 
-		//TODO Save annotation set 
 		//TODO Remove specific annotation
 		
 		JMenuItem OPEN_ANO = new JMenuItem(new AbstractAction("Open file...") {
@@ -685,6 +686,31 @@ public class SplitPanel extends JPanel {
 		    }
 		});
 		open_ano.add(CLOSE_ANO);
+		
+		
+		JMenuItem SAVE_ANO = new JMenuItem(new AbstractAction("Save Annotation Set...") {
+
+			private static final long serialVersionUID = 1L;
+
+			public void actionPerformed(ActionEvent e) {
+				
+				String nameFile = JOptionPane.showInputDialog("Name file");
+
+				JFileChooser savefile = new JFileChooser();
+		        savefile.setSelectedFile(new File(nameFile));
+		        savefile.showSaveDialog(savefile);
+		        
+		        File toSave = savefile.getSelectedFile(); 
+		        
+		        AnnotationSet curAnnos = annotations.get(0); //TODO allow for more annotation sets 
+
+		        curAnnos.save_to_file(toSave);
+
+		    	refresh();
+		    }
+		});
+		open_ano.add(SAVE_ANO);
+		
 		
 		JMenuItem NEW_ANO = new JMenuItem(new AbstractAction("New annotation...") {
 
