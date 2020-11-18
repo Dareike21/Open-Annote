@@ -54,7 +54,7 @@ public class SplitPanel extends JPanel {
 	private int mode;
 	
 	public SplitPanel() {
-		setBackground(Color.DARK_GRAY);
+		setBackground(MyColors.BACKGROUND);
 		setLayout(new GridLayout(0, 1, 0, 0));
 		
 		panel = new JPanel();
@@ -86,7 +86,7 @@ public class SplitPanel extends JPanel {
 		
 		doc_panel = new JPanel();
 		doc_panel.setBorder(null);
-		doc_panel.setBackground(Color.DARK_GRAY);
+		doc_panel.setBackground(MyColors.BACKGROUND);
 		GridBagConstraints gbc_edit_doc_panel = new GridBagConstraints();
 		gbc_edit_doc_panel.weighty = 100.0;
 		gbc_edit_doc_panel.weightx = 3.0;
@@ -116,7 +116,7 @@ public class SplitPanel extends JPanel {
 				
 		ano_panel = new JPanel(new BorderLayout());
 		ano_panel.setBorder(null);
-		ano_panel.setBackground(Color.GRAY);
+		ano_panel.setBackground(MyColors.SIDEBAR);
 		GridBagConstraints gbc_edit_ano_panel = new GridBagConstraints();
 		gbc_edit_ano_panel.anchor = GridBagConstraints.EAST;
 		gbc_edit_ano_panel.weighty = 100.0;

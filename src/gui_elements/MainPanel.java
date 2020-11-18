@@ -16,6 +16,8 @@ public class MainPanel extends JPanel {
 	public MainPanel() {
 		setLayout(new GridLayout(1,1));
 		
+		setBackground(MyColors.BACKGROUND);
+		
 		tabs = new JTabbedPane();
 		add(tabs);
 		
