@@ -271,12 +271,13 @@ public class SplitPanel extends JPanel {
 		//ANNOFIELD
 		
 		this.anno_field = new JTextPane();
+		anno_field.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		ano_panel.add(anno_field);
 		
-		HTMLEditorKit kit = new HTMLEditorKit();
+		/*HTMLEditorKit kit = new HTMLEditorKit();
 	    HTMLDocument doc = new HTMLDocument();
 	    anno_field.setEditorKit(kit);
-	    anno_field.setDocument(doc);
+	    anno_field.setDocument(doc);*/
 	    anno_field.setPreferredSize(new Dimension(0,1));
 	    anno_field.setEditable(false);
 	    
@@ -464,6 +465,7 @@ public class SplitPanel extends JPanel {
 		    	}
 		    }
 		});
+		anno_field.setFont(new Font("SansSerif", Font.PLAIN, 15));
 		edit_anno_pane.add(anno_field);
 	    
 	    JPanel button_holder = new JPanel( new GridLayout(0,2));
