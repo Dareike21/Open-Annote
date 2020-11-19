@@ -1,6 +1,5 @@
 package text_obj;
 
-import java.awt.Point;
 import java.util.*;
 
 public class AnnoChapter {

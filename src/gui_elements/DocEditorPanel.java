@@ -288,6 +288,14 @@ public class DocEditorPanel extends JPanel {
 			while(doc.size()<=current_chapter) {
 				doc.add("");
 			}
+			
+			if(doc.size()==current_chapter+1) {
+				forward_button.setText("+");
+			}
+			else {
+				forward_button.setText(">");
+			}
+			
 			doc_field.setText(doc.get(current_chapter));
 		}
 	}
