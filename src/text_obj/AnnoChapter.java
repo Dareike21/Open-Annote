@@ -19,14 +19,14 @@ public class AnnoChapter {
 	
 	public void add_annotation(Integer[] key, String anno) {
 		this.annotations.put(key, anno);
-		this.hash_annotations.put(anno.hashCode(),anno);
-		this.hash_positions.put(anno.hashCode(),key);
+		this.hash_annotations.put(AnnoChapter.hash(key,anno),anno);
+		this.hash_positions.put(AnnoChapter.hash(key,anno),key);
 	}
 	
 	public void overwrite_annotation(Integer[] key, String anno) { //This could probably just be default behavior, but the different names make it more clear what is going on
 		String old_anno = annotations.remove(key);
 		if(old_anno != null) {
-			Integer hash = old_anno.hashCode();
+			Integer hash = AnnoChapter.hash(key,anno);
 			hash_annotations.remove(hash);
 			hash_positions.remove(hash);
 		}
@@ -48,7 +48,7 @@ public class AnnoChapter {
 	public void delete_annotation_by_pos(Integer[] pos) {
 		String anno = annotations.remove(pos);
 		if(anno != null) {
-			Integer hash = anno.hashCode();
+			Integer hash = AnnoChapter.hash(pos,anno);
 			hash_annotations.remove(hash);
 			hash_positions.remove(hash);
 		}
@@ -65,29 +65,33 @@ public class AnnoChapter {
 			
 			if(range[0] == range[2] && para == range[0]) {
 				if(range[1] <= i && i <= range[3]) {
-					pos.add( annotations.get(range).hashCode() );
+					pos.add( AnnoChapter.hash(range,annotations.get(range)) );
 				}
 			}
 			
 			if(range[0] < range[2] && para == range[0]) {
 				if(range[1] <= i) {
-					pos.add( annotations.get(range).hashCode() );
+					pos.add( AnnoChapter.hash(range,annotations.get(range)) );
 				}
 			}
 			
 			if(range[0] < range[2] && para == range[2]) {
 				if(i <= range[3]) {
-					pos.add( annotations.get(range).hashCode() );
+					pos.add( AnnoChapter.hash(range,annotations.get(range)) );
 				}
 			}
 			
 			if(range[0] < para && para < range[2]) {
-				pos.add( annotations.get(range).hashCode() );
+				pos.add( AnnoChapter.hash(range,annotations.get(range)) );
 			}
 			
 		}
 		
 		return pos;
+	}
+	
+	public static int hash(Integer[] pos, String anno) {
+		return (pos.toString()+anno).hashCode();
 	}
 	
 }

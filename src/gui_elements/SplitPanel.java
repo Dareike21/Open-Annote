@@ -496,7 +496,7 @@ public class SplitPanel extends JPanel {
 				url += ".";
 				url += Integer.toString(0); //which of the loaded annotation sets
 				url += ".";
-				url += Integer.toString(newtext.hashCode()); //hashed id of the annotations
+				url += Integer.toString(AnnoChapter.hash(curpos,newtext)); //hashed id of the annotations
 				url += "/";
 				
 				open_annos_url = url;
@@ -624,7 +624,7 @@ public class SplitPanel extends JPanel {
 	            	Integer[] key = { start_point.x,start_point.y,
 	            			          end_point.x,  end_point.y-1   };
 	            		            	
-	            	annotations.get(0).get_annochapter(current_chap).add_annotation(key, Tester.random_string());
+	            	annotations.get(0).get_annochapter(current_chap).add_annotation(key, "");
 	            	refresh();
             	}	
             }

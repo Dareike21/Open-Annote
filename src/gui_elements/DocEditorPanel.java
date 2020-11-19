@@ -163,8 +163,12 @@ public class DocEditorPanel extends JPanel {
 		
 		//MENU
 		
-		JMenu new_menu = new JMenu("New");
-		menu_bar.add(new_menu);
+		JMenu load_menu = new JMenu("Load");
+		menu_bar.add(load_menu);
+		
+		//
+		
+		new_doc();
 	}
 	
 	private void new_doc() {
