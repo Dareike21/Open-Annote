@@ -209,6 +209,13 @@ public class DocEditorPanel extends JPanel {
 
 			public void actionPerformed(ActionEvent e) {
 				
+				doc.set(current_chapter, doc_field.getText());
+				for(int i = 1; i < doc.size(); i++)
+				{
+					remove_empty(i);
+				}
+				
+				
 				String nameFile = JOptionPane.showInputDialog("Name file");
 
 				JFileChooser savefile = new JFileChooser();
@@ -247,6 +254,20 @@ public class DocEditorPanel extends JPanel {
 		doc.add("");
 		current_chapter = 1;
 		refresh();
+	}
+	
+	private void remove_empty(int index) {
+		
+		String input = doc.get(index);
+		
+		if(input.length() == 0)
+		{
+			doc.remove(index);
+			return;
+		}
+		
+		//input.replaceAll("\r\n\r\n", "\r\n");
+	
 	}
 	
 	private void load_doc(ArrayList<String> new_doc) {
