@@ -29,11 +29,11 @@ public class MainPanel extends JPanel {
 		edit_tab = new SplitPanel();
 		edit_tab.init_edit();
 		ImageIcon edit_icon = new ImageIcon("assets/images/edit.png");
-		tabs.addTab("<html><font size=+1>Edit</font></html>", edit_icon, edit_tab);
+		tabs.addTab("<html><font size=+1>Edit Annotations</font></html>", edit_icon, edit_tab);
 		
 		write_tab = new DocEditorPanel();
 		ImageIcon write_icon = new ImageIcon("assets/images/write.png");
-		tabs.addTab("<html><font size=+1>Write</font></html>", write_icon, write_tab);
+		tabs.addTab("<html><font size=+1>Edit Documents</font></html>", write_icon, write_tab);
 	
 	}
 
