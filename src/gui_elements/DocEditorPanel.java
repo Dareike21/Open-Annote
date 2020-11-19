@@ -7,18 +7,26 @@ import javax.swing.JMenu;
 
 import java.awt.GridBagLayout;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+
 import java.awt.Component;
 import java.awt.Dimension;
 
+import javax.swing.AbstractAction;
 import javax.swing.Box;
 import java.awt.GridBagConstraints;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
+
 import java.awt.Insets;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 
+import text_obj.AnnotationSet;
 import text_obj.Document;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
@@ -109,7 +117,7 @@ public class DocEditorPanel extends JPanel {
 		gbc_back_button.gridy = 0;
 		chapter_control.add(back_button, gbc_back_button);
 		
-		chap_field = new JTextField();
+		chap_field = new JTextField("No document loaded.");
 		GridBagConstraints gbc_chap_field = new GridBagConstraints();
 		gbc_chap_field.weightx = 0.5;
 		gbc_chap_field.insets = new Insets(0, 0, 0, 5);
@@ -119,7 +127,7 @@ public class DocEditorPanel extends JPanel {
 		chapter_control.add(chap_field, gbc_chap_field);
 		chap_field.setColumns(10);
 		
-		forward_button = new JButton(">");
+		forward_button = new JButton("+");
 		GridBagConstraints gbc_forward_button = new GridBagConstraints();
 		gbc_forward_button.insets = new Insets(0, 0, 0, 5);
 		gbc_forward_button.weightx = 1.0;
@@ -146,8 +154,15 @@ public class DocEditorPanel extends JPanel {
 		forward_button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(doc!= null) {
-					String text = Integer.toString(current_chapter + 1);
-					chap_field.setText(text);
+					
+					doc.set(current_chapter, doc_field.getText());
+					
+					if(current_chapter + 1 == doc.size())
+					{
+						doc.add(""); 
+					}
+					
+					current_chapter++;
 					refresh();
 				}
 			}
@@ -155,16 +170,65 @@ public class DocEditorPanel extends JPanel {
 		
 		back_button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String text = Integer.toString(current_chapter - 1);
-				chap_field.setText(text);
-				refresh();
+				if(doc != null)
+				{
+					doc.set(current_chapter, doc_field.getText());
+					
+					if(current_chapter != 1)
+					{
+						current_chapter -= 1; 
+					}
+					
+					refresh();
+				}
 			}
 		});
 		
 		//MENU
 		
-		JMenu new_menu = new JMenu("New");
+		JMenu new_menu = new JMenu("New Document");
 		menu_bar.add(new_menu);
+		
+		JMenuItem NEW_DOC = new JMenuItem(new AbstractAction("New document...") {
+
+			private static final long serialVersionUID = 1L;
+
+			public void actionPerformed(ActionEvent e) {
+				new_doc();
+				
+		    }
+	
+		});
+		new_menu.add(NEW_DOC);
+		
+		/*
+		JMenuItem SAVE_DOC = new JMenuItem(new AbstractAction("Save Document...") {
+
+			private static final long serialVersionUID = 1L;
+
+				
+				String nameFile = JOptionPane.showInputDialog("Name file");
+
+				JFileChooser savefile = new JFileChooser();
+		        savefile.setSelectedFile(new File(nameFile));
+		        savefile.showSaveDialog(savefile);
+		        
+		        File toSave = savefile.getSelectedFile(); 
+		        
+		        Document curDoc = new Document();
+		        
+		        for(int i = 0; i < doc.size(); i++) {
+		        	curDoc.
+		        }
+
+		        curDoc.save_to_file(toSave);
+
+		    	refresh();
+		    }
+		});
+		menu_bar.add(SAVE_DOC);
+		*/
+		
 	}
 	
 	private void new_doc() {
@@ -184,16 +248,25 @@ public class DocEditorPanel extends JPanel {
 	private void refresh() {
 		if(doc==null) {
 			doc_field.setText("");
-			chap_field.setText("");
+			chap_field.setText("No document loaded.");
 		}
-		else {
+		else {					//we don't allow a chapter zero for clarity
+			
+			if(current_chapter + 1 == doc.size()){
+				forward_button.setText("+");
+			}
+			else
+			{
+				forward_button.setText(">");
+			}
+			
+			/*
 			int chap = Integer.parseInt(chap_field.getText());
-			if(chap < 1 || chap >= doc.size()) { //we don't allow a chapter zero for clarity
+			if(current_chapter == doc.size()) { 
 				current_chapter=chap;
 			}
-			else {
-				chap=current_chapter;
-			}
+			*/
+				
 			chap_field.setText(Integer.toString(current_chapter));
 			doc_field.setText(doc.get(current_chapter));
 		}

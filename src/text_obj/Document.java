@@ -124,7 +124,6 @@ public class Document {
 		}
 	}
 	
-	//Testing code is found in SplitPanel.java on the TEST_LOAD
 	public void initialize_empty() {
 		//Format version taken from testtext.oad
 		format_version = "alpha_oad"; 
@@ -142,7 +141,6 @@ public class Document {
 		
 	}
 	
-
 	public void save_to_file(File toSave) throws IOException {
 		
 		try (//Saves open document to named file. 
