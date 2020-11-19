@@ -20,11 +20,14 @@ import java.awt.GridBagConstraints;
 import javax.swing.JButton;
 import java.awt.Insets;
 import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 
+import text_obj.Chapter;
 import text_obj.Document;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
@@ -115,7 +118,7 @@ public class DocEditorPanel extends JPanel {
 		gbc_back_button.gridy = 0;
 		chapter_control.add(back_button, gbc_back_button);
 		
-		chap_field = new JTextField("No document loaded.");
+		chap_field = new JTextField();
 		GridBagConstraints gbc_chap_field = new GridBagConstraints();
 		gbc_chap_field.weightx = 0.5;
 		gbc_chap_field.insets = new Insets(0, 0, 0, 5);
@@ -199,7 +202,7 @@ public class DocEditorPanel extends JPanel {
 		});
 		new_menu.add(NEW_DOC);
 		
-		/*
+		
 		JMenuItem SAVE_DOC = new JMenuItem(new AbstractAction("Save Document...") {
 
 			private static final long serialVersionUID = 1L;
@@ -215,18 +218,19 @@ public class DocEditorPanel extends JPanel {
 		        File toSave = savefile.getSelectedFile(); 
 		        
 		        Document curDoc = new Document();
-		        
-		        for(int i = 0; i < doc.size(); i++) {
-		        	curDoc.
-		        }
 
-		        curDoc.save_to_file(toSave);
+		        try {
+					curDoc.save_to_file(toSave, doc);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 
 		    	refresh();
 		    }
 		});
-		menu_bar.add(SAVE_DOC);
-		*/
+		new_menu.add(SAVE_DOC);
+		
 		
 		
 		JMenu load_menu = new JMenu("Load");

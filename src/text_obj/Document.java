@@ -5,7 +5,7 @@ import java.util.*;
 
 public class Document {
 	
-	private String format_version = null;
+	private String format_version = "alpha_oad";
 	private int id = 0;
 	
 	private File file = null;
@@ -141,7 +141,9 @@ public class Document {
 		
 	}
 	
-	public void save_to_file(File toSave) throws IOException {
+	
+	//This has been edited to read the ArrayList<String> doc in the DocEditorPanel. 
+	public void save_to_file(File toSave, ArrayList<String> doc) throws IOException { //THIS WILL NOT WORK IF THERE IS MORE THAN ONE PARAGRAPH PER CHAPTER. 
 		
 		try (//Saves open document to named file. 
 		FileWriter writer = new FileWriter(toSave, true)) {
@@ -154,21 +156,15 @@ public class Document {
 			writer.flush(); 
 			
 			//Saves chapters 
-			for( int i = 1; i <= table_of_contents.size(); i++)
+			for(int i = 1; i < doc.size(); i++) //Should skip doc(0)
 			{
 				writer.append("CH " + i + "\r\n"); 
-				Chapter curChapter = get_chapter(i); 
-				int j = 0; 
-				
-				while(curChapter.get_paragraph(j) != null)
-				{
-					writer.append(curChapter.get_paragraph(j) + "\r\n");
-					j++; 
-				}
+				writer.append(doc.get(i) + "\r\n");
 				writer.append("EDCH" + "\r\n");
-				writer.flush(); 
+				
 			}
-		} 
+			writer.flush(); 
+		}
 		catch(IOException e)
 		{
 			//Auto-generated catch block 
