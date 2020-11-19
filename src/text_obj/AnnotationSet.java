@@ -158,7 +158,7 @@ public class AnnotationSet {
 					
 					//Saves chapters 
 					
-					for( int i = 1; i <= table_of_contents.size(); i++)
+					for( int i : loaded_annochapters.keySet() )
 					{
 						writer.append("CH " + i + "\r\n"); 
 						AnnoChapter curChapter = get_annochapter(i); 
@@ -166,6 +166,12 @@ public class AnnotationSet {
 						
 						for(Integer[] annoKey : keyList)
 						{
+							
+							String curAnno = curChapter.get_annotation(annoKey);
+							if(curAnno.length() == 0) {
+								continue;
+							}
+							
 							for(int j = 0; j < 4; j++)
 							{
 								String curInt = annoKey[j].toString();
@@ -177,11 +183,11 @@ public class AnnotationSet {
 							}
 							
 							writer.append("");
-							String curAnno = curChapter.get_annotation(annoKey);
+							System.out.println(curAnno);
 							writer.append(curAnno + endline);
 						}
 						
-						writer.append("EDCH" + "\r\n");
+						writer.append("EDCH" + endline);
 						writer.flush(); 
 					}
 				} 

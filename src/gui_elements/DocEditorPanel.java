@@ -7,21 +7,32 @@ import javax.swing.JMenu;
 
 import java.awt.GridBagLayout;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+
 import java.awt.Component;
 import java.awt.Dimension;
 
+import javax.swing.AbstractAction;
 import javax.swing.Box;
 import java.awt.GridBagConstraints;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
+
 import java.awt.Insets;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 
+import text_obj.AnnotationSet;
+import text_obj.Chapter;
 import text_obj.Document;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 
 public class DocEditorPanel extends JPanel {
@@ -29,7 +40,7 @@ public class DocEditorPanel extends JPanel {
 	private static final long serialVersionUID = 5004766195140504233L;
 	
 	private ArrayList<String> doc; //array of chapters. Converted to doc obj when saving.
-	private int current_chapter;
+	private int current_chapter = 1;
 	
 	private JTextField chap_field;
 	private JMenuBar menu_bar;
@@ -139,6 +150,11 @@ public class DocEditorPanel extends JPanel {
 	}
 	
 	private void post_setup() {
+		
+		DocEditorPanel master_ref = this;
+		
+		chap_field.setHorizontalAlignment(JTextField.CENTER);
+		
 		chap_field.setPreferredSize(new Dimension(0,35));
 		forward_button.setPreferredSize(new Dimension(50,35));
 		back_button.setPreferredSize(new Dimension(50,35));
@@ -163,8 +179,78 @@ public class DocEditorPanel extends JPanel {
 		
 		//MENU
 		
+		JMenu save_menu = new JMenu("Save");
+		menu_bar.add(save_menu);
+		
+		JMenuItem save_to_file = new JMenuItem(new AbstractAction("Save as...") {
+
+			private static final long serialVersionUID = 1L;
+
+			public void actionPerformed(ActionEvent e) {
+				
+				JFileChooser fc = new JFileChooser();
+				
+		        int returnVal = fc.showOpenDialog(master_ref);
+
+		        if (returnVal == JFileChooser.APPROVE_OPTION) {
+		            File file = fc.getSelectedFile();
+		            
+		            Document out_doc = new Document();
+		            
+		            boolean write = false;
+		            ArrayList<String> paraholder;
+		            
+		            for(int chap_index = doc.size()-1; chap_index > 0; chap_index--) {
+		            	if(doc.get(chap_index).length() > 0) {
+		            		write= true;
+		            	}
+		            	if(write) {
+		            		paraholder = new ArrayList<String>();
+		            		for(String para : doc.get(chap_index).split("\\r?\\n")) {
+		            			if(para.length()>0) {
+		            				paraholder.add(para);
+		            				System.out.println(para);
+		            			}
+		            		}
+		            		out_doc.add_chapter(chap_index, new Chapter(paraholder));
+		            	}
+		            }
+		            try {
+						out_doc.save_to_file(file);
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+		        }
+				
+		    }
+	
+		});
+		save_menu.add(save_to_file);
+		
+		
 		JMenu load_menu = new JMenu("Load");
 		menu_bar.add(load_menu);
+		
+		//DOC UPDATE
+		
+		doc_field.getDocument().addDocumentListener( new DocumentListener() {
+			
+		    public void insertUpdate(DocumentEvent e) {
+		    	change_check();
+		    }
+		    public void removeUpdate(DocumentEvent e) {
+		    	change_check();
+		    }
+		    public void changedUpdate(DocumentEvent e) {
+		    	change_check();
+		    }
+
+		    public void change_check() {
+		    	doc.set(current_chapter, doc_field.getText());
+		    }
+			
+		});
 		
 		//
 		
@@ -175,13 +261,13 @@ public class DocEditorPanel extends JPanel {
 		doc = new ArrayList<String>();
 		doc.add(null); //position zero isn't used
 		doc.add("");
-		current_chapter = 1;
+		chap_field.setText("1");
 		refresh();
 	}
 	
 	private void load_doc(ArrayList<String> new_doc) {
 		doc = new_doc;
-		current_chapter = 1;
+		chap_field.setText("1");
 		refresh();
 	}
 	
@@ -192,13 +278,16 @@ public class DocEditorPanel extends JPanel {
 		}
 		else {
 			int chap = Integer.parseInt(chap_field.getText());
-			if(chap < 1 || chap >= doc.size()) { //we don't allow a chapter zero for clarity
-				current_chapter=chap;
-			}
-			else {
+			if(chap < 1) {              //we don't allow a chapter zero for clarity
 				chap=current_chapter;
 			}
+			else {
+				current_chapter=chap;
+			}
 			chap_field.setText(Integer.toString(current_chapter));
+			while(doc.size()<=current_chapter) {
+				doc.add("");
+			}
 			doc_field.setText(doc.get(current_chapter));
 		}
 	}

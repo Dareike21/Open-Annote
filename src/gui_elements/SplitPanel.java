@@ -145,7 +145,7 @@ public class SplitPanel extends JPanel {
 		SpringLayout sl_holder = new SpringLayout();
 		holder.setLayout(sl_holder);
 		
-		margin = (int) Math.round( (3.0/8.0)*w - 100 );
+		margin = (int) Math.round( (3.0/8.0)*w - 200 );
 		
 		chapter_field = new JTextField();
 		sl_holder.putConstraint(SpringLayout.NORTH, chapter_field, 0, SpringLayout.NORTH, holder);
@@ -229,6 +229,9 @@ public class SplitPanel extends JPanel {
 	private void init_buttons() {
 		
 		SplitPanel master_ref = this;
+		
+		ano_menu.setPreferredSize(new Dimension(0,23));
+		doc_menu.setPreferredSize(new Dimension(0,23));
 		
 		button_forward.addActionListener(new ActionListener() {
 	         public void actionPerformed(ActionEvent e) {
@@ -355,20 +358,7 @@ public class SplitPanel extends JPanel {
 	
 		});
 		
-
-		JMenuItem TEST_MOVE = new JMenuItem(new AbstractAction("MOVE TEST") { //TODO Remove test option
-
-			private static final long serialVersionUID = 1L;
-
-			public void actionPerformed(ActionEvent e) {
-				scroll_to(200);
-				//scroll_pane.getViewport().setViewPosition(new Point(0,200));
-		    }
-	
-		});
-	    
 		open_doc.add(TEST_LOAD);
-		open_doc.add(TEST_MOVE);
 		
 		/////////////////////////////////////////////////////////////////
 		
@@ -625,6 +615,22 @@ public class SplitPanel extends JPanel {
 	            			          end_point.x,  end_point.y-1   };
 	            		            	
 	            	annotations.get(0).get_annochapter(current_chap).add_annotation(key, "");
+	            	
+	            	String url = "/";
+					url += Integer.toString(current_chap); //chapter
+					url += ".";
+					url += Integer.toString(0); //which of the loaded annotation sets
+					url += ".";
+					url += Integer.toString(AnnoChapter.hash(key, "")); //hashed id of the annotations
+					url += "/";
+					
+					open_annos = new ArrayList<String>();
+                	open_annos_pos = new ArrayList<Integer[]>();
+					
+                	open_annos_url = url;
+                	open_annos.add("");
+                	open_annos_pos.add(key);
+	            	
 	            	refresh();
             	}	
             }
@@ -632,7 +638,27 @@ public class SplitPanel extends JPanel {
 		
 		ano_menu.add(add_button);
 		
-		JMenu open_ano = new JMenu("Open annotation set");
+		JMenu new_ano = new JMenu("New");
+		ano_menu.add(new_ano);
+		
+		JMenuItem NEW_ANO = new JMenuItem(new AbstractAction("New annotation...") {
+
+			private static final long serialVersionUID = 1L;
+
+			public void actionPerformed(ActionEvent e) {
+				
+		    	AnnotationSet ano = new AnnotationSet();
+		    	ano.initialize_empty();
+		    	master_ref.add_annotation(ano);
+		    	
+		    	System.out.println(master_ref.annotations.size());
+				
+		    }
+	
+		});
+		new_ano.add(NEW_ANO);
+		
+		JMenu open_ano = new JMenu("Open");
 		ano_menu.add(open_ano);
 		
 		//TODO Remove specific annotation
@@ -680,17 +706,16 @@ public class SplitPanel extends JPanel {
 		});
 		open_ano.add(CLOSE_ANO);
 		
+		JMenu save_ano = new JMenu("Save");
+		ano_menu.add(save_ano);
 		
-		JMenuItem SAVE_ANO = new JMenuItem(new AbstractAction("Save Annotation Set...") {
+		JMenuItem SAVE_ANO = new JMenuItem(new AbstractAction("Save annotation set...") {
 
 			private static final long serialVersionUID = 1L;
 
 			public void actionPerformed(ActionEvent e) {
 				
-				String nameFile = JOptionPane.showInputDialog("Name file");
-
 				JFileChooser savefile = new JFileChooser();
-		        savefile.setSelectedFile(new File(nameFile));
 		        savefile.showSaveDialog(savefile);
 		        
 		        File toSave = savefile.getSelectedFile(); 
@@ -702,26 +727,15 @@ public class SplitPanel extends JPanel {
 		    	refresh();
 		    }
 		});
-		open_ano.add(SAVE_ANO);
+		save_ano.add(SAVE_ANO);
 		
+		//Start with a new blank annotation
 		
-		JMenuItem NEW_ANO = new JMenuItem(new AbstractAction("New annotation...") {
-
-			private static final long serialVersionUID = 1L;
-
-			public void actionPerformed(ActionEvent e) {
-				
-		    	AnnotationSet ano = new AnnotationSet();
-		    	ano.initialize_empty();
-		    	master_ref.add_annotation(ano);
-		    	
-		    	System.out.println(master_ref.annotations.size());
-				
-		    }
-	
-		});
-		open_ano.add(NEW_ANO);
-		
+		AnnotationSet ano = new AnnotationSet();
+    	ano.initialize_empty();
+    	master_ref.add_annotation(ano);
+    		
+		//
 		refresh();
 				
 	}

@@ -156,7 +156,7 @@ public class Document {
 			writer.flush(); 
 			
 			//Saves chapters 
-			for( int i = 1; i <= table_of_contents.size(); i++)
+			for( int i : loaded_chapters.keySet())
 			{
 				writer.append("CH " + i + "\r\n"); 
 				Chapter curChapter = get_chapter(i); 
@@ -224,6 +224,10 @@ public class Document {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public void add_chapter(int i, Chapter chap) {
+		loaded_chapters.put(i, chap);
 	}
 	
 	
