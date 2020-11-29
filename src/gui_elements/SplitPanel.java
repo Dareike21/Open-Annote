@@ -133,30 +133,34 @@ public class SplitPanel extends JPanel {
 		gbc_nav_panel.gridy = 2;
 		panel.add(nav_panel, gbc_nav_panel);
 		nav_panel.setLayout(new BorderLayout(0, 0));
-		
-		button_back = new JButton("<");
-		nav_panel.add(button_back, BorderLayout.WEST);
-		
-		button_forward = new JButton(">");
-		nav_panel.add(button_forward, BorderLayout.EAST);
+		nav_panel.setPreferredSize(new Dimension(0,25));
 		
 		holder = new JPanel();
 		nav_panel.add(holder, BorderLayout.CENTER);
-		SpringLayout sl_holder = new SpringLayout();
-		holder.setLayout(sl_holder);
+		holder.setLayout(new BorderLayout());
 		
-		margin = (int) Math.round( (3.0/8.0)*w - 200 );
+		button_back = new JButton("<");
+		holder.add(button_back, BorderLayout.WEST);
+		
+		button_forward = new JButton(">");
+		holder.add(button_forward, BorderLayout.EAST);
 		
 		chapter_field = new JTextField();
-		sl_holder.putConstraint(SpringLayout.NORTH, chapter_field, 0, SpringLayout.NORTH, holder);
-		sl_holder.putConstraint(SpringLayout.WEST, chapter_field, margin, SpringLayout.WEST, holder);
-		sl_holder.putConstraint(SpringLayout.SOUTH, chapter_field, 0, SpringLayout.SOUTH, holder);
-		sl_holder.putConstraint(SpringLayout.EAST, chapter_field, -margin, SpringLayout.EAST, holder);
+
 		holder.add(chapter_field);
 		chapter_field.setColumns(10);
 		chapter_field.setHorizontalAlignment(JTextField.CENTER);
 		
-		///
+		JLabel padding1 = new JLabel("                                            ");
+		JLabel padding2 = new JLabel("                                            ");
+		
+		margin = (int) Math.round(.30*w);
+		padding1.setPreferredSize(new Dimension(margin,0));
+		padding2.setPreferredSize(new Dimension(margin,0));
+		
+		nav_panel.add(padding1,BorderLayout.WEST);
+		nav_panel.add(padding2,BorderLayout.EAST);
+		
 		try {
 			init_doc_field();
 		} catch (BadLocationException | IOException e) {
@@ -731,6 +735,20 @@ public class SplitPanel extends JPanel {
 			doc_field.setText("<html></html>");
 			chapter_field.setText("");
 			return;
+		}
+		
+		if(current_chap == 1) { //handling forward/backward chapter buttons
+			button_back.setEnabled(false);
+		} 
+		else {
+			button_back.setEnabled(true);
+		}
+		
+		if(document.get_chapter(current_chap+1)==null) {
+			button_forward.setEnabled(false);
+		} 
+		else {
+			button_forward.setEnabled(true);
 		}
 		
 		//Load Chapter
