@@ -218,7 +218,6 @@ public class DocEditorPanel extends JPanel {
 		            try {
 						out_doc.save_to_file(file);
 					} catch (IOException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 		        }

@@ -208,7 +208,6 @@ public class Document {
 			try {
 				this.load_chapter(i);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -221,7 +220,6 @@ public class Document {
 		try {
 			reader.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

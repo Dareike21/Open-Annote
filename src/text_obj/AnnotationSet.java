@@ -202,7 +202,6 @@ public class AnnotationSet {
 				try {
 					fileCreated = toSave.createNewFile();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} 				
 			}
@@ -231,7 +230,6 @@ public class AnnotationSet {
 				try {
 					this.load_chapter(i);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}			
@@ -250,7 +248,6 @@ public class AnnotationSet {
 		try {
 			reader.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (NullPointerException e) {
 			

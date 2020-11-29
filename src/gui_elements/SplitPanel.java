@@ -160,7 +160,6 @@ public class SplitPanel extends JPanel {
 		try {
 			init_doc_field();
 		} catch (BadLocationException | IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		init_buttons();
@@ -221,9 +220,7 @@ public class SplitPanel extends JPanel {
         };
 	    
 	    doc_field.addHyperlinkListener(click_annote_listener);
-	    
-	    //TODO move scroll to scroll_target when doc_field updates its text, to maintain position
-	    
+	    	    
 	}
 	
 	private void init_buttons() {
@@ -342,24 +339,7 @@ public class SplitPanel extends JPanel {
 		    }
 		});
 		open_doc.add(CLOSE_DOC);
-		
-		JMenuItem TEST_LOAD = new JMenuItem(new AbstractAction("LOAD TEST") { //TODO Remove test option
-
-			private static final long serialVersionUID = 1L;
-
-			public void actionPerformed(ActionEvent e) {
-		    	Document doc = new Document();
-		    	try {
-					doc.load_from_file(new File("library/testtext_long.oad"));
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-		    	master_ref.set_doc(doc);
-		    }
 	
-		});
-		
-		open_doc.add(TEST_LOAD);
 		
 		/////////////////////////////////////////////////////////////////
 		
@@ -407,24 +387,6 @@ public class SplitPanel extends JPanel {
 		    }
 		});
 		open_ano.add(CLOSE_ANO);
-		
-		JMenuItem TEST_ANO = new JMenuItem(new AbstractAction("LOAD TEST") { //TODO Remove test option
-
-			private static final long serialVersionUID = 1L;
-
-			public void actionPerformed(ActionEvent e) {
-				
-		    	AnnotationSet ano = new AnnotationSet();
-		    	try {
-		    		ano.load_from_file(new File("library/testano_long.ano"));
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-		    	master_ref.add_annotation(ano);
-				
-		    }	
-		});
-		open_ano.add(TEST_ANO);
 		
 		refresh();
 		
@@ -531,9 +493,7 @@ public class SplitPanel extends JPanel {
 				
 		JMenu open_doc = new JMenu("Open document");
 		doc_menu.add(open_doc);
-		
-		//TODO check open and close document for edit tab 
-		
+				
 		JMenuItem OPEN_DOC = new JMenuItem(new AbstractAction("Open file...") {
 
 			private static final long serialVersionUID = 1L;
@@ -578,24 +538,6 @@ public class SplitPanel extends JPanel {
 		    }
 		});
 		open_doc.add(CLOSE_DOC);
-		
-		JMenuItem TEST_LOAD = new JMenuItem(new AbstractAction("LOAD TEST") { //TODO Remove test option
-
-			private static final long serialVersionUID = 1L;
-
-			public void actionPerformed(ActionEvent e) {
-		    	Document doc = new Document();
-		    	try {
-					doc.load_from_file(new File("library/testtext_long.oad"));
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-		    	master_ref.set_doc(doc);
-	
-		    }
-	
-		});
-		open_doc.add(TEST_LOAD);
 		
 		/////////////////////////////////////////////////////////////////
 		
@@ -643,7 +585,7 @@ public class SplitPanel extends JPanel {
 		JMenu new_ano = new JMenu("New");
 		ano_menu.add(new_ano);
 		
-		JMenuItem NEW_ANO = new JMenuItem(new AbstractAction("New annotation...") {
+		JMenuItem NEW_ANO = new JMenuItem(new AbstractAction("New annotation set") {
 
 			private static final long serialVersionUID = 1L;
 
@@ -722,7 +664,7 @@ public class SplitPanel extends JPanel {
 		        
 		        File toSave = savefile.getSelectedFile(); 
 		        
-		        AnnotationSet curAnnos = annotations.get(0); //TODO allow for more annotation sets 
+		        AnnotationSet curAnnos = annotations.get(0); 
 
 		        curAnnos.save_to_file(toSave);
 
@@ -774,7 +716,7 @@ public class SplitPanel extends JPanel {
 		refresh(false);
 	}
 	
-	private void refresh(boolean reset_scroll) { //TODO split up refresh (maybe not possible)
+	private void refresh(boolean reset_scroll) {
 		
 		int scroll_target;
 		
