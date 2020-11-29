@@ -47,6 +47,7 @@ public class DocEditorPanel extends JPanel {
 	
 	private JButton forward_button;
 	private JButton back_button;
+	private JButton new_chapter;
 	
 	private JTextPane doc_field;
 	private JScrollPane scroll_pane;
@@ -104,18 +105,16 @@ public class DocEditorPanel extends JPanel {
 		gbl_chapter_control.rowWeights = new double[]{0.0, Double.MIN_VALUE};
 		chapter_control.setLayout(gbl_chapter_control);
 		
-		Component horizontalStrut_1 = Box.createHorizontalStrut(20);
-		GridBagConstraints gbc_horizontalStrut_1 = new GridBagConstraints();
-		gbc_horizontalStrut_1.weightx = 4.0;
-		gbc_horizontalStrut_1.insets = new Insets(0, 0, 0, 5);
-		gbc_horizontalStrut_1.gridx = 0;
-		gbc_horizontalStrut_1.gridy = 0;
-		chapter_control.add(horizontalStrut_1, gbc_horizontalStrut_1);
+		Component horizontalStrut = Box.createHorizontalStrut(20);
+		GridBagConstraints gbc_horizontalStrut = new GridBagConstraints();
+		gbc_horizontalStrut.weightx = 8.0;
+		gbc_horizontalStrut.gridx = 0;
+		gbc_horizontalStrut.gridy = 0;
+		chapter_control.add(horizontalStrut, gbc_horizontalStrut);
 		
 		back_button = new JButton("<");
 		GridBagConstraints gbc_back_button = new GridBagConstraints();
 		gbc_back_button.weightx = 1.0;
-		gbc_back_button.insets = new Insets(0, 0, 0, 5);
 		gbc_back_button.gridx = 1;
 		gbc_back_button.gridy = 0;
 		chapter_control.add(back_button, gbc_back_button);
@@ -123,7 +122,6 @@ public class DocEditorPanel extends JPanel {
 		chap_field = new JTextField();
 		GridBagConstraints gbc_chap_field = new GridBagConstraints();
 		gbc_chap_field.weightx = 0.5;
-		gbc_chap_field.insets = new Insets(0, 0, 0, 5);
 		gbc_chap_field.fill = GridBagConstraints.HORIZONTAL;
 		gbc_chap_field.gridx = 2;
 		gbc_chap_field.gridy = 0;
@@ -132,19 +130,24 @@ public class DocEditorPanel extends JPanel {
 		
 		forward_button = new JButton(">");
 		GridBagConstraints gbc_forward_button = new GridBagConstraints();
-		gbc_forward_button.insets = new Insets(0, 0, 0, 5);
 		gbc_forward_button.weightx = 1.0;
 		gbc_forward_button.gridx = 3;
 		gbc_forward_button.gridy = 0;
 		chapter_control.add(forward_button, gbc_forward_button);
 		
-		Component horizontalStrut_2 = Box.createHorizontalStrut(20);
-		GridBagConstraints gbc_horizontalStrut_2 = new GridBagConstraints();
-		gbc_horizontalStrut_2.weightx = 4.0;
-		gbc_horizontalStrut_2.insets = new Insets(0, 0, 0, 5);
-		gbc_horizontalStrut_2.gridx = 4;
-		gbc_horizontalStrut_2.gridy = 0;
-		chapter_control.add(horizontalStrut_2, gbc_horizontalStrut_2);
+		new_chapter = new JButton("+");
+		GridBagConstraints gbc_new_chapter = new GridBagConstraints();
+		gbc_new_chapter.gridx = 4;
+		gbc_new_chapter.gridy = 0;
+		chapter_control.add(new_chapter, gbc_new_chapter);
+		
+		Component horizontalStrut_1 = Box.createHorizontalStrut(20);
+		GridBagConstraints gbc_horizontalStrut_1 = new GridBagConstraints();
+		gbc_horizontalStrut_1.weightx = 8.0;
+		gbc_horizontalStrut_1.insets = new Insets(0, 0, 0, 5);
+		gbc_horizontalStrut_1.gridx = 5;
+		gbc_horizontalStrut_1.gridy = 0;
+		chapter_control.add(horizontalStrut_1, gbc_horizontalStrut_1);
 		
 		post_setup();
 	}
@@ -158,6 +161,7 @@ public class DocEditorPanel extends JPanel {
 		chap_field.setPreferredSize(new Dimension(0,35));
 		forward_button.setPreferredSize(new Dimension(50,35));
 		back_button.setPreferredSize(new Dimension(50,35));
+		new_chapter.setPreferredSize(new Dimension(50,35));
 		
 		forward_button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -174,6 +178,16 @@ public class DocEditorPanel extends JPanel {
 				String text = Integer.toString(current_chapter - 1);
 				chap_field.setText(text);
 				refresh();
+			}
+		});
+		
+		new_chapter.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(doc!= null) {
+					String text = Integer.toString(current_chapter + 1);
+					chap_field.setText(text);
+					refresh();
+				}
 			}
 		});
 		
@@ -279,9 +293,11 @@ public class DocEditorPanel extends JPanel {
 			int chap = Integer.parseInt(chap_field.getText());
 			if(chap < 1) {              //we don't allow a chapter zero for clarity
 				chap=current_chapter;
+				forward_button.setEnabled(false);
 			}
 			else {
 				current_chapter=chap;
+				forward_button.setEnabled(true);
 			}
 			chap_field.setText(Integer.toString(current_chapter));
 			while(doc.size()<=current_chapter) {
@@ -289,10 +305,12 @@ public class DocEditorPanel extends JPanel {
 			}
 			
 			if(doc.size()==current_chapter+1) {
-				forward_button.setText("+");
+				forward_button.setEnabled(false);
+				new_chapter.setEnabled(true);
 			}
 			else {
-				forward_button.setText(">");
+				forward_button.setEnabled(true);
+				new_chapter.setEnabled(false);
 			}
 			
 			doc_field.setText(doc.get(current_chapter));
