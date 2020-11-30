@@ -586,7 +586,7 @@ public class SplitPanel extends JPanel {
 		
 		ano_menu.add(add_button);
 		
-		JMenu new_ano = new JMenu("New");
+		JMenu new_ano = new JMenu("Clear");
 		ano_menu.add(new_ano);
 		
 		JMenuItem NEW_ANO = new JMenuItem(new AbstractAction("New annotation set") {
@@ -606,7 +606,7 @@ public class SplitPanel extends JPanel {
 		});
 		new_ano.add(NEW_ANO);
 		
-		JMenu open_ano = new JMenu("Open");
+		JMenu open_ano = new JMenu("Open annotation set");
 		ano_menu.add(open_ano);
 		
 		//TODO Remove specific annotation
