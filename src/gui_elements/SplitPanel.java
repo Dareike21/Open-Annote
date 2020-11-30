@@ -320,6 +320,13 @@ public class SplitPanel extends JPanel {
 			    	master_ref.set_doc(doc);
 		            
 		        }
+		        
+		      //Closes annotations when a document is opened 
+				for(int i = 0; i < annotations.size(); i++)
+				{
+					annotations.get(i).close(); 
+				}
+				annotations.clear(); 
 		    }
 		});
 		open_doc.add(OPEN_DOC);
@@ -519,6 +526,13 @@ public class SplitPanel extends JPanel {
 			    	master_ref.set_doc(doc);
 		            
 		        }
+		        
+		      //Closes annotations when a document is opened  
+				for(int i = 0; i < annotations.size(); i++)
+				{
+					annotations.get(i).close(); 
+				}
+				annotations.clear(); 
 		    }
 		});
 		open_doc.add(OPEN_DOC);
