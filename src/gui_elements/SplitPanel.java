@@ -2,6 +2,7 @@ package gui_elements;
 
 import javax.swing.*;
 import javax.swing.event.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.*;
 import javax.swing.text.html.*;
 
@@ -306,6 +307,8 @@ public class SplitPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser fc = new JFileChooser();
 				
+				fc.setFileFilter(new FileNameExtensionFilter("OpenAnnote Documents", "oad"));
+				
 		        int returnVal = fc.showOpenDialog(master_ref);
 
 		        if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -365,6 +368,8 @@ public class SplitPanel extends JPanel {
 
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser fc = new JFileChooser();
+				
+				fc.setFileFilter(new FileNameExtensionFilter("OpenAnnote Annotations", "ano"));
 				
 		        int returnVal = fc.showOpenDialog(master_ref);
 
@@ -512,6 +517,8 @@ public class SplitPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser fc = new JFileChooser();
 				
+				fc.setFileFilter(new FileNameExtensionFilter("OpenAnnote Documents", "oad"));
+				
 		        int returnVal = fc.showOpenDialog(master_ref);
 
 		        if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -631,6 +638,8 @@ public class SplitPanel extends JPanel {
 
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser fc = new JFileChooser();
+				
+				fc.setFileFilter(new FileNameExtensionFilter("OpenAnnote Annotations", "ano"));
 				
 		        int returnVal = fc.showOpenDialog(master_ref);
 
