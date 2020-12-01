@@ -353,6 +353,35 @@ public class SplitPanel extends JPanel {
 		    }
 		});
 		open_doc.add(CLOSE_DOC);
+		
+		JMenu help = new JMenu("Help");
+		doc_menu.add(help);
+		
+		JMenuItem ViewTutorial = new JMenuItem(new AbstractAction("View Tutorial") {
+			
+				private static final long serialVersionUID = 1L;
+
+				public void actionPerformed(ActionEvent e) {
+					
+					Document doc = new Document();
+					try {
+						doc.load_from_file(new File("library/help.oad"));
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+			    	master_ref.set_doc(doc);
+		    	
+					//Closes annotations when a document is closed 
+					for(int i = 0; i < annotations.size(); i++)
+					{
+						annotations.get(i).close(); 
+					}
+					annotations.clear(); 
+						
+		    	refresh();
+		    }
+		});
+		help.add(ViewTutorial);
 	
 		
 		/////////////////////////////////////////////////////////////////
