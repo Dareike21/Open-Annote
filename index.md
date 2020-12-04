@@ -2,22 +2,22 @@
 ### Group Members
 
 - Derek Hinojosa
-	- Classification: Junior 
+	- Class: Junior 
 	- Major: Computer Science
 
 - Maxwell Hosler
-	- Classification: Junior
+	- Class: Junior
 	- Major: Math
  
 - Corey Ulman
-	- Classification: Junior
+	- Class: Junior
 	- Major: Computer Science, English
 
-### Open Annote
+### OpenAnnote
 
 <img src="assets/logo_large.png" alt="The Open Annote logo. It looks like a black italicized O with an a superscript in the center of a cream circle." />
 
-Open Annote is an application that allows one to read and create annotated documents, similar to Genius Lyrics, Hypothes.is, and traditional annotated texts such as _The Annotated Shakespeare._ Open Annote is intended to be user-friendly, with GUI design being a major focus during development. 
+OpenAnnote is an application that allows one to read and create annotated documents, for the purpose of sharing knowledge about complex or historical texts, including classical literature and works ofpolitical theory. OpenAnnote's goal is to be an open source system where people can create annotations for the same base document, allowing users to curate annotations on texts they need help understanding.
 
 ### Application Features
 
