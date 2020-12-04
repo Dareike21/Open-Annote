@@ -232,8 +232,8 @@ public class SplitPanel extends JPanel {
 		
 		SplitPanel master_ref = this;
 		
-		ano_menu.setPreferredSize(new Dimension(0,23));
-		doc_menu.setPreferredSize(new Dimension(0,23));
+		ano_menu.setPreferredSize(new Dimension(0,33));
+		doc_menu.setPreferredSize(new Dimension(0,33));
 		
 		button_forward.addActionListener(new ActionListener() {
 	         public void actionPerformed(ActionEvent e) {
@@ -306,7 +306,6 @@ public class SplitPanel extends JPanel {
 
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser fc = new JFileChooser();
-				
 				fc.setFileFilter(new FileNameExtensionFilter("OpenAnnote Documents", "oad"));
 				
 		        int returnVal = fc.showOpenDialog(master_ref);

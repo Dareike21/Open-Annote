@@ -7,7 +7,7 @@ public class MyColors {
 	//COLOR OBJS [For JSwing]
 	
 	public static final Color BACKGROUND = Color.DARK_GRAY;
-	public static final Color SIDEBAR    = Color.GRAY;
+	public static final Color SIDEBAR    = Color.LIGHT_GRAY;
 	
 	//HEX [For HTML]
 	

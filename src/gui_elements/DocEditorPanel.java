@@ -162,6 +162,7 @@ public class DocEditorPanel extends JPanel {
 		forward_button.setPreferredSize(new Dimension(50,35));
 		back_button.setPreferredSize(new Dimension(50,35));
 		new_chapter.setPreferredSize(new Dimension(50,35));
+		menu_bar.setPreferredSize(new Dimension(0,33));
 		
 		forward_button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

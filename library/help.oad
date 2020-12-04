@@ -3,26 +3,27 @@
 VR null
 EDHD
 CH 1
-Hello! Welcome to OpenAnnote. This program is designed to let you annotate texts and read others' annotations. Here is a quick tutorial on how to use OpenAnnote. 
-This is the "Read" tab. When reading an annotated text, you'll be here. This pane is where the text you're reading will be - so, if you're reading an annotated Shakespeare play, this is where you'll see the text. OpenAnnote divides texts into chapters. Within a chapter, you scroll up and down, and to change chapters, you use the "<" and ">" arrows at the bottom of the screen, or type the chapter you want to jump to in the box between them. 
+Hello! Welcome to OpenAnnote. This program is designed to let you annotate texts and read others' annotations. Here is a quick tutorial to help you get started. 
+This is the "Read" tab. This tab allows you to read and view documents and annotations. (You can see what tab you're in at the top left of the screen.) This panel is where the text you're reading will be (for example, if you're reading an annotated Shakespeare, this is where Romeo's lines will appear.)
+OpenAnnote divides texts into chapters. Within a chapter, you scroll up and down (assuming the chapter is long enough). To change chapters, click the "<" and ">" buttons at the bottom of the screen, or type the chapter you want to jump to in the box between them. 
 To continue, click the ">" button at the bottom of the screen. 
 EDCH
 CH 2
-To open annotations, click the "Open Annotations" menu on the right side of the screen. From there, you can load OpenAnnote annotation files onto your text. To try this out, load the "help.ano" file onto this document! (It should be in the directory you installed OpenAnnote in.) 
-In the "Read" tab, annotations appear as blue highlights. If you click highlighted text, the associated annotation will appear on the right side of the screen. 
-You can load multiple annotation sets onto a single document. 
-(If you want to load a different document, the button to do that is the "Open Document" button on the left side of the screen. Note that closing a document will also close all open annotations. The file extension for OpenAnnote documents is .oad.) 
+To open annotations, click the "Open Annotations" menu on the right side of the screen. From there, you can load OpenAnnote annotation sets onto your text. To try this out, load the "help.ano" file onto this document! (It should be in the directory "open-annote/library/help.ano".)  
+In the "Read" tab, annotations appear as blue highlights. If you click highlighted text, the associated annotation will appear on the right side of the screen in the annotations panel. 
+You can load multiple annotation sets onto a single document at once. 
+(If you want to load a different document, click the "Open Document" button on the top left side of the screen. The file extension for OpenAnnote documents is ".oad". Note that closing a document will also close all open annotations.) 
 To continue, click the ">" button at the bottom of the screen. 
 EDCH
 CH 3
 In order to edit annotations, move over to the "Edit Annotations" tab. The "Read" and "Edit Annotations" tabs load files separately, so it'll be blank when you first start up. To start, load a document in the "Open Document" menu. 
-To create an annotation, highlight a selection of text you want to annotate. After that, click the "+" button, and write your annotation on the sidebar on the right side of the screen. When you're done with your annotation, be sure to click the "Save" button at the bottom of the annotation panel. You can edit annotations by clicking on the highlight (green in the "Edit Annotations" tab) and writing in the annotation panel. When you're done, you can "Save" the edited annotation or "Delete" it. 
+To create an annotation, highlight a selection of text you want to annotate. After that, click the "+" button. Your highlight will turn green (the color of annotation highlights in the "Edit Annotations" tab), and the annotation panel on the right side of the screen will become a text box you can write your annotation in. When you're done with your annotation, be sure to click the "Save" button at the bottom of the annotation panel. You can edit annotations by clicking on the highlight and writing in the annotation panel. When you're done, you can "Save" the edited annotation or "Delete" it using the buttons at the bottom of the screen. 
 When you've created all the annotations you need, click the "Save" menu on the top right of the screen. This saves all of your written annotations as one "Annotation Set", and exports your annotation set as a OpenAnnote Annotation file. 
 To start over, click the "Clear" button. This gets rid of all your current annotations and gives you a fresh new annotation set to work with. 
 To continue, click the ">" button at the bottom of the screen. 
 EDCH
 CH 4
-Finally, in order to import a document into OpenAnnote, click on the "Edit Documents" tab. Fom there, you'll see a blank document panel. Write or copy your document into this panel. Use the "+" button to add a chapter, and use the "<" and ">" buttons to navigate between existing chapters. 
-When you're done with your document, click the "Save" button in the top right of the screen to export your document as an OpenAnnote document file. 
+Finally, in order to import a document into OpenAnnote, click on the "Edit Documents" tab. Fom there, you'll see a blank document panel. Write or copy your document into this panel. Use the "+" button at the bottom to add a chapter, and use the "<" and ">" buttons to navigate between existing chapters. 
+When you're done with your document, click the "Save" button in the top right of the screen to export your document as an OpenAnnote document file. The file extension for OpenAnnote documents is ".oad".
 Thank you for using OpenAnnote! 
 EDCH
